@@ -1,0 +1,4357 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BioReto - Aprende jugando</title>
+
+    <style>
+       
+body {
+    font-family: Arial, sans-serif;
+    background: #eaf7ee;
+    color: #234333;
+    text-align: center;
+    margin: 0;
+    padding: 16px;
+    overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 6px;
+    }
+
+    .contenedor {
+        padding: 10px;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+}
+
+
+        
+.contenedor {
+    width: 100%;
+    max-width: 1200px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    padding: 20px;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px #00000015;
+}
+
+
+        h1 {
+            color: #218653;
+            font-size: 40px;
+        }
+
+        .carta {
+            margin-top: 20px;
+            padding: 22px;
+            background: #f4fbf6;
+            border: 2px solid #218653;
+            border-radius: 15px;
+        }
+
+        select, .respuesta, .boton {
+            box-sizing: border-box;
+            width: 100%;
+            padding: 13px;
+            margin: 8px 0;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        select, .respuesta {
+            background: white;
+            color: #234333;
+            border: 1px solid #b7d9c3;
+        }
+
+        .respuesta {
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .respuesta:hover:not(:disabled) {
+            background: #e0f4e6;
+        }
+
+        .respuesta:disabled {
+            cursor: default;
+            opacity: 0.8;
+        }
+
+        .boton {
+            background: #218653;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .boton:disabled {
+            background: #9ab9a5;
+            cursor: not-allowed;
+        }
+
+        #resultado {
+            font-weight: bold;
+            line-height: 1.5;
+        }
+
+        .progreso {
+            color: #218653;
+            font-weight: bold;
+        }
+
+        .oculto {
+            display: none;
+        }
+        .dado {
+    width: 100px;
+    height: 100px;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: white;
+    border: 3px solid #218653;
+    border-radius: 18px;
+    color: #218653;
+    font-size: 65px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px #00000015;
+    }
+    
+
+#marcadorJuego {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    color: #f4f8e9;
+    background: linear-gradient(135deg, #142b25, #25483b);
+    border: 1px solid #76b85a;
+    border-radius: 14px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+#marcadorJuego span {
+    padding: 7px 9px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+}
+
+#marcadorJuego strong {
+    color: #c8f56a;
+    font-size: 1.05em;
+}
+
+.dado.girando {
+    animation: girarDado 0.5s ease-in-out;
+}
+
+@keyframes girarDado {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(180deg) scale(1.15); }
+    100% { transform: rotate(360deg) scale(1); }
+}
+
+
+#escenario {
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+    height: auto;
+    box-sizing: border-box;
+    margin: 16px auto;
+    background: #c9efff;
+    border: 3px solid #76b85a;
+    border-radius: 14px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    touch-action: none;
+}
+
+
+#zonaMinijuego button {
+    padding: 12px;
+    margin: 5px;
+    border: none;
+    border-radius: 8px;
+    background: #218653;
+    color: white;
+    cursor: pointer;
+}
+
+#mensajeDerrota {
+    text-align: center;
+    color: #F3F5D5;
+    background: #17291F;
+    padding: 18px;
+    border: 1px solid #B81D13;
+    border-radius: 10px;
+}
+
+#mensajeDerrota h3 {
+    color: #FF6B5F;
+}
+
+#mensajeDerrota button {
+    padding: 10px 18px;
+    color: white;
+    background: #B81D13;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+
+#mensajeVictoria {
+    position: relative;
+    margin: 20px auto;
+    padding: 26px 22px;
+    max-width: 420px;
+    text-align: center;
+    color: #f4f8e9;
+    background: linear-gradient(145deg, #17291f, #304b37);
+    border: 2px solid #a3e635;
+    border-radius: 18px;
+    box-shadow:
+        0 12px 30px rgba(0, 0, 0, 0.35),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    animation: aparecerResultado 0.45s ease-out;
+}
+
+@keyframes aparecerResultado {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+
+#mensajeVictoria h3 {
+    color: #c8f56a;
+    font-size: 1.5rem;
+    margin: 0 0 12px;
+    text-shadow: 0 2px 10px rgba(163, 230, 53, 0.2);
+}
+
+#mensajeVictoria p {
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin: 0 0 12px;
+}
+
+#mensajeVictoria button {
+    padding: 12px 20px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #c8f56a, #84cc16);
+    color: #17291f;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+#mensajeVictoria button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.08);
+}
+
+
+#menuInicio {
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 25px;
+    text-align: center;
+    color: #F3F5D5;
+    background: #17291F;
+    border: 2px solid #8BC34A;
+    border-radius: 14px;
+}
+
+#menuInicio h2 {
+    color: #8BC34A;
+    margin-bottom: 15px;
+}
+
+#menuInicio p {
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+#menuInicio button {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    background: #8BC34A;
+    color: #17291F;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#menuInicio button:hover {
+    background: #A5D65E;
+}
+
+
+/* Mensajes de estado durante la partida */
+#estadoJuego {
+    margin: 14px auto;
+    padding: 12px 16px;
+    max-width: 560px;
+    text-align: center;
+    color: #f4f8e9;
+    background: linear-gradient(135deg, #203d30, #31553b);
+    border: 1px solid #76b85a;
+    border-left: 5px solid #c8f56a;
+    border-radius: 10px;
+    font-size: 0.98rem;
+    font-weight: bold;
+    line-height: 1.5;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+#instruccionesJuego {
+    max-width: 600px;
+    margin: 12px auto;
+    padding: 12px 16px;
+    color: #30483a;
+    background: linear-gradient(135deg, #f3f8e9, #e1efcf);
+    border: 1px solid #b5d69a;
+    border-radius: 10px;
+    line-height: 1.6;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+
+.medidor-fuerza {
+    width: 240px;
+    margin: 12px auto;
+    padding: 12px;
+    background: #202b3d;
+    color: white;
+    border: 2px solid #64748b;
+    border-radius: 10px;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+.medidor-titulo {
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.barra-fuerza {
+    width: 100%;
+    height: 18px;
+    background: #475569;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.nivel-fuerza {
+    width: 50%;
+    height: 100%;
+    background: #22c55e;
+    transition: width 0.15s ease;
+}
+
+.medidor-ayuda {
+    margin-top: 7px;
+    font-size: 12px;
+    color: #cbd5e1;
+}
+
+.marcador-puntos {
+    width: 260px;
+    margin: 12px auto;
+    padding: 12px;
+    background: #172554;
+    color: white;
+    border: 2px solid #60a5fa;
+    border-radius: 10px;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
+
+#puntosUltimoTiro {
+    font-size: 20px;
+    color: #facc15;
+    margin-bottom: 6px;
+}
+
+#puntajeTotal {
+    font-size: 15px;
+}
+
+/* Adaptación de BioReto a diferentes pantallas */
+canvas {
+    display: block;
+    width: min(96vw, 1100px);
+    height: auto;
+    margin: 0 auto;
+    touch-action: none;
+}
+
+@media (max-width: 768px) {
+    canvas {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    body {
+        margin: 0;
+        overflow-x: hidden;
+    }
+}
+
+/* Adaptación de BioReto a computadora y celular */
+canvas {
+    display: block;
+    width: 100%;
+    max-width: 1100px;
+    height: auto;
+    margin: 0 auto;
+    touch-action: none;
+}
+
+/* Evitar desbordamientos horizontales */
+html,
+body {
+    max-width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 768px) {
+    canvas {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+
+.controles-tactiles {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 15px auto;
+    width: 100%;
+}
+
+.boton-control {
+    min-width: 110px;
+    min-height: 48px;
+    padding: 12px 18px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    background: #287a46;
+    color: white;
+    cursor: pointer;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.boton-control:active {
+    background: #18552f;
+    transform: scale(0.96);
+}
+
+@media (max-width: 600px) {
+    .controles-tactiles {
+        gap: 8px;
+    }
+
+    .boton-control {
+        flex: 1;
+        min-width: 90px;
+        min-height: 54px;
+        padding: 10px 6px;
+        font-size: 14px;
+    }
+}
+
+#controlesDisparo {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    max-width: 400px;
+    margin: 12px auto;
+}
+
+#controlesDisparo.oculto {
+    display: none !important;
+}
+
+
+#controlesDisparo .boton-control {
+    flex: 1 1 120px;
+}
+
+@media (max-width: 600px) {
+    #controlesDisparo .boton-control {
+    flex: 1 1 42%;
+    min-width: 0;
+    min-height: 56px;
+    font-size: 16px;
+}
+}
+
+/* Adaptación de BioReto para celulares */
+@media (max-width: 600px) {
+    .marcador-puntos {
+        max-width: 100%;
+        box-sizing: border-box;
+        font-size: 14px;
+        padding: 8px;
+        margin: 8px auto;
+    }
+
+    .medidor-fuerza {
+        max-width: 100%;
+        box-sizing: border-box;
+        margin: 8px auto;
+    }
+
+    #escenario {
+        margin: 10px auto;
+        border-width: 2px;
+        border-radius: 10px;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+img,
+video {
+    max-width: 100%;
+}
+
+/* Pantalla de juego */
+#zonaMinijuego {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px;
+}
+
+/* MARCADOR DE VIDAS Y LUMS */
+#marcadorJuego {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    color: #f4f8e9;
+    background: linear-gradient(135deg, #142b25, #25483b);
+    border: 1px solid #76b85a;
+    border-radius: 14px;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+#marcadorJuego span {
+    padding: 7px 9px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+}
+
+#marcadorJuego strong {
+    color: #c8f56a;
+    font-size: 1.05em;
+}
+
+#pantallaJuego {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow: hidden;
+    background: #c9efff;
+    border-radius: 14px;
+}
+
+#pantallaJuego #escenario {
+    display: block;
+    width: 100%;
+    max-width: none;
+    height: auto;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#interfazJuego {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+}
+
+#interfazJuego button {
+    pointer-events: auto;
+}
+
+#interfazJuego .medidor-fuerza {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: min(190px, 42%);
+    margin: 0;
+    padding: 7px;
+    background: rgba(23, 41, 31, 0.85);
+    border-color: #8bc34a;
+}
+
+#interfazJuego .controles-tactiles {
+    position: absolute;
+    bottom: 8px;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    width: auto;
+    margin: 0;
+}
+
+#interfazJuego #controlesTactiles {
+    left: 8px;
+}
+
+#interfazJuego #controlesDisparo {
+    right: 8px;
+    max-width: 55%;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+
+#interfazJuego .boton-control {
+    min-width: 0;
+    width: clamp(50px, 8vw, 76px);
+    height: clamp(50px, 8vw, 76px);
+    padding: 4px;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    background: rgba(33, 134, 83, 0.9);
+    color: white;
+    font-size: clamp(18px, 3vw, 26px);
+    font-weight: bold;
+}
+
+
+#pantallaJuego #menuInicio {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(90%, 440px);
+    margin: 0;
+    padding: 14px;
+    box-sizing: border-box;
+    background: rgba(23, 41, 31, 0.94);
+    z-index: 5;
+}
+
+#pantallaJuego #menuInicio h2 {
+    margin-top: 0;
+}
+
+#pantallaJuego #menuInicio p {
+    margin-bottom: 12px;
+}
+
+#pantallaJuego #menuInicio button {
+    min-height: 44px;
+}
+
+@media (max-width: 600px) {
+    #zonaMinijuego {
+        padding: 0;
+        border-radius: 0;
+    }
+
+    #pantallaJuego {
+        width: 100%;
+        border-radius: 8px;
+    }
+
+    #interfazJuego .medidor-fuerza {
+        top: 5px;
+        right: 5px;
+        width: 38%;
+        font-size: 11px;
+    }
+
+    #interfazJuego .controles-tactiles {
+        bottom: 5px;
+        gap: 5px;
+    }
+
+    #interfazJuego #controlesDisparo {
+        max-width: 58%;
+        gap: 4px;
+    }
+
+    #interfazJuego .boton-control {
+        width: clamp(36px, 10vw, 54px);
+        height: clamp(36px, 10vw, 54px);
+        font-size: 15px;
+    }
+
+    #pantallaJuego #menuInicio {
+        padding: 10px;
+    }
+
+    #pantallaJuego #menuInicio h2 {
+        font-size: 20px;
+    }
+
+    #pantallaJuego #menuInicio p {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+}
+
+
+/* Escenario del minijuego */
+#pantallaJuego {
+    position: relative;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #c9efff;
+}
+
+/* El juego conserva la proporción original del canvas */
+#pantallaJuego #escenario {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+/* Capa que contiene los controles */
+#interfazJuego {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+#interfazJuego button {
+    pointer-events: auto;
+}
+
+/* Medidor de fuerza en la esquina superior derecha */
+#interfazJuego #medidorFuerza {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: min(190px, 42%);
+    margin: 0;
+    padding: 7px;
+    box-sizing: border-box;
+}
+
+/* Controles en la parte inferior */
+#interfazJuego .controles-tactiles {
+    position: absolute;
+    bottom: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: auto;
+    margin: 0;
+    padding: 0;
+}
+
+#interfazJuego #controlesTactiles {
+    left: 8px;
+}
+
+#interfazJuego #controlesDisparo {
+    right: 8px;
+    max-width: 55%;
+    justify-content: flex-end;
+}
+
+/* Botones cómodos para tocar */
+#interfazJuego .boton-control {
+    min-width: 0;
+    width: clamp(38px, 7vw, 58px);
+    height: clamp(38px, 7vw, 58px);
+    padding: 4px;
+    border: 2px solid rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    background: rgba(33, 134, 83, 0.9);
+    color: white;
+    font-size: clamp(15px, 2.5vw, 22px);
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Menú de inicio centrado sobre el juego */
+#pantallaJuego #menuInicio {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 5;
+    width: min(90%, 440px);
+    max-height: 90%;
+    overflow-y: auto;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 14px;
+}
+
+/* Ajustes para celulares */
+@media (max-width: 600px) {
+    #zonaMinijuego {
+        padding: 6px;
+    }
+
+    #interfazJuego #medidorFuerza {
+        top: 5px;
+        right: 5px;
+        width: min(155px, 42%);
+        padding: 5px;
+        font-size: 12px;
+    }
+
+    #interfazJuego .controles-tactiles {
+        bottom: 5px;
+        gap: 4px;
+    }
+
+    #interfazJuego #controlesTactiles {
+        left: 5px;
+    }
+
+    #interfazJuego #controlesDisparo {
+        right: 5px;
+        max-width: 58%;
+    }
+}
+
+/* Ajustes para jugar en celular horizontal */
+@media (max-width: 700px) and (orientation: landscape) {
+    body {
+        padding: 4px;
+    }
+
+    .contenedor {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    #zonaMinijuego {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+        padding: 5px;
+        box-sizing: border-box;
+    }
+
+    #zonaMinijuego > h2 {
+        margin: 4px 0;
+        font-size: 18px;
+    }
+
+    #zonaMinijuego > p {
+        margin: 4px 0;
+        font-size: 12px;
+    }
+
+    #marcadorJuego {
+        margin: 4px 0;
+        padding: 4px 8px;
+        font-size: 12px;
+    }
+
+    #pantallaJuego {
+        width: 100%;
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    #interfazJuego #medidorFuerza {
+        top: 4px;
+        right: 4px;
+        width: 145px;
+        padding: 4px;
+        font-size: 11px;
+    }
+
+    #interfazJuego .controles-tactiles {
+        bottom: 4px;
+        gap: 4px;
+    }
+
+    #interfazJuego .boton-control {
+        width: 42px;
+        height: 42px;
+        font-size: 17px;
+    }
+
+    #marcadorPuntos {
+        margin: 4px auto;
+        font-size: 12px;
+    }
+
+    #estadoJuego {
+        margin: 4px 0;
+        font-size: 12px;
+    }
+}
+
+
+/* Distribución de controles de movimiento */
+#interfazJuego #controlesTactiles {
+    left: 8px;
+    right: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Izquierda y derecha permanecen juntas */
+#interfazJuego #controlesTactiles #izquierda {
+    order: 1;
+}
+
+#interfazJuego #controlesTactiles #derecha {
+    order: 2;
+}
+
+/* Salto se desplaza hacia el centro */
+#interfazJuego #controlesTactiles #saltar {
+    order: 3;
+    margin-left: 700px;
+}
+
+
+/* ===== CONTROLES TÁCTILES DE BIORETO ===== */
+
+#interfazJuego .controles-tactiles {
+    position: absolute;
+    bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    width: auto;
+}
+
+/* Nivel 1: movimiento y salto */
+#interfazJuego #controlesTactiles {
+    left: 12px;
+    right: auto;
+    flex-wrap: nowrap;
+}
+
+/* Niveles 2 y 3: controles de arco */
+#interfazJuego #controlesDisparo {
+    left: 12px;
+    right: auto;
+    max-width: calc(100% - 24px);
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-end;
+    gap: 8px;
+}
+
+/* Ocultar los controles de la fase que no está activa */
+#interfazJuego #controlesTactiles.oculto,
+#interfazJuego #controlesDisparo.oculto {
+    display: none !important;
+}
+
+/* Botones uniformes */
+#interfazJuego .boton-control {
+    flex: 0 0 44px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    border-radius: 50%;
+    background: rgba(33, 134, 83, 0.92);
+    color: white;
+    font-size: 19px;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* En pantallas pequeñas, botones un poco más compactos */
+@media (max-width: 600px) {
+    #interfazJuego .controles-tactiles {
+        bottom: 7px;
+        gap: 6px;
+    }
+
+    #interfazJuego #controlesTactiles {
+        left: 7px;
+    }
+
+    #interfazJuego #controlesDisparo {
+        left: 7px;
+        max-width: calc(100% - 14px);
+        gap: 6px;
+    }
+
+    #interfazJuego .boton-control {
+        flex-basis: 40px;
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        font-size: 17px;
+    }
+}
+
+#pantallaJuego {
+    position: relative;
+}
+
+#marcadorPuntos {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 5;
+    padding: 8px 12px;
+    color: white;
+    background: rgba(23, 41, 31, 0.92);
+    border: 1px solid #496C43;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: left;
+    pointer-events: none;
+}
+
+/* ======================================
+   MODO HISTORIA - BIORETO
+   ====================================== */
+
+#modoHistoria {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    background: rgba(24, 27, 24, 0.94);
+    font-family: "Courier New", monospace;
+}
+
+#modoHistoria.historia-oculta {
+    display: none;
+}
+
+#modoHistoria .pergamino {
+    position: relative;
+    width: min(100%, 650px);
+    max-height: calc(100dvh - 36px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    padding: 30px clamp(20px, 5vw, 42px);
+    color: #3B352E;
+    background-color: #E3D5BE;
+    border: 4px solid #4A433A;
+    box-shadow:
+        0 0 0 4px #6B5E4F,
+        8px 8px 0 #171916;
+    image-rendering: pixelated;
+}
+
+/* Textura sutil de papel envejecido */
+#modoHistoria .pergamino::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.25;
+    background-image:
+        radial-gradient(ellipse at 15% 20%,
+            #A99A80 0, transparent 18%),
+        radial-gradient(ellipse at 85% 75%,
+            #B6A488 0, transparent 20%);
+}
+
+#modoHistoria .pergamino > * {
+    position: relative;
+}
+
+/* Anillas superiores */
+#modoHistoria .historia-anillas {
+    display: flex;
+    justify-content: space-around;
+    gap: 12px;
+    margin: -30px -12px 22px;
+    height: 25px;
+}
+
+#modoHistoria .historia-anillas span {
+    width: 15px;
+    height: 25px;
+    flex: 0 0 15px;
+    box-sizing: border-box;
+    border: 4px solid #6B5E4F;
+    border-bottom-color: #3D352B;
+    border-radius: 7px 7px 2px 2px;
+    background: #D1BFA0;
+    box-shadow: 2px 3px 0 #3D352B;
+}
+
+#modoHistoria .historia-cabecera {
+    text-align: center;
+}
+
+#modoHistoria .historia-etiqueta,
+#modoHistoria #historiaProgreso {
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+#modoHistoria .historia-etiqueta {
+    color: #6B5E4F;
+}
+
+#modoHistoria #historiaProgreso {
+    color: #A83838;
+}
+
+#modoHistoria .historia-linea {
+    height: 3px;
+    margin: 16px 0 24px;
+    background: #3B8A78;
+    box-shadow: 0 2px 0 #A99A80;
+}
+
+/* Títulos y texto del pergamino */
+#modoHistoria .historia-contenido {
+    display: block;
+    position: relative;
+    width: 100%;
+    min-height: 100px;
+    color: #3B352E;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+#modoHistoria .historia-contenido h2 {
+    margin: 0 0 20px;
+    font-size: clamp(21px, 4vw, 30px);
+    line-height: 1.4;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+#modoHistoria .historia-contenido p {
+    margin: 0 0 16px;
+    font-size: clamp(13px, 2.5vw, 16px);
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+#modoHistoria .historia-contenido ul,
+#modoHistoria .historia-contenido ol {
+    padding-left: 24px;
+    line-height: 1.8;
+}
+
+#modoHistoria .historia-contenido li {
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
+}
+
+#modoHistoria .historia-contenido strong {
+    color: #A83838;
+}
+
+
+#modoHistoria .historia-contenido strong {
+    color: #A83838;
+}
+
+#modoHistoria .historia-contenido ul,
+#modoHistoria .historia-contenido ol {
+    padding-left: 24px;
+    line-height: 1.8;
+}
+
+#modoHistoria .historia-contenido li {
+    margin-bottom: 10px;
+    overflow-wrap: anywhere;
+}
+
+/* Botón para avanzar */
+#modoHistoria .historia-pie {
+    padding-top: 12px;
+    border-top: 2px dashed #A99A80;
+}
+
+#modoHistoria #historiaContinuar {
+    display: block;
+    width: 100%;
+    min-height: 50px;
+    padding: 12px;
+    border: 3px solid #3D352B;
+    border-radius: 0;
+    background: #3B8A78;
+    color: #FFFFFF;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 4px 4px 0 #6B5E4F;
+}
+
+#modoHistoria #historiaContinuar:hover {
+    background: #2E7D68;
+}
+
+#modoHistoria #historiaContinuar:focus-visible {
+    outline: 3px solid #A83838;
+    outline-offset: 4px;
+}
+
+@media (max-width: 480px) {
+    #modoHistoria {
+        padding: 12px;
+    }
+
+    #modoHistoria .pergamino {
+        max-height: calc(100dvh - 24px);
+        padding: 24px 18px;
+    }
+
+    #modoHistoria .historia-anillas {
+        margin-top: -24px;
+    }
+}
+
+    </style>
+</head>
+
+<body>
+    <div class="contenedor">
+        <h1>BioReto</h1>
+        <p>¡Aprende Biología mientras juegas!</p>
+        
+<div class="carta oculto" id="zonaRetos">
+    <h2>🎲 Zona de retos</h2>
+    <p>¡Lanza el dado y demuestra tus habilidades de Biología!</p>
+
+    <div id="dado" class="dado">⚄</div>
+
+    <button class="boton" id="lanzarDado">
+        Lanzar dado
+    </button>
+
+    <h3 id="numeroReto">¡Prepárate para el reto!</h3>
+
+    <p id="textoReto">
+        Pulsa el botón para descubrir tu desafío biológico.
+    </p>
+</div>
+
+
+        
+<div class="carta" id="contenedorCategoria">
+    <h2>Elige el tema de Biología</h2>
+
+    <p>
+        Selecciona el tema que deseas practicar.
+        Las preguntas de la partida pertenecerán al tema elegido.
+    </p>
+
+    <select id="categoria">
+        <option value="Todas">Todos los temas</option>
+        <option value="Replicación">Replicación del ADN</option>
+        <option value="Transcripción">Transcripción del ADN a ARN</option>
+        <option value="Traducción">Traducción y síntesis de proteínas</option>
+        <option value="Mixtas">Preguntas mixtas</option>
+    </select>
+
+    <button class="boton" id="comenzar">
+        Comenzar partida
+    </button>
+</div>
+
+
+        <div class="carta oculto" id="zonaJuego">
+            <p class="progreso" id="progreso"></p>
+
+            <h2 id="pregunta"></h2>
+
+            <div id="opciones"></div>
+
+            <p id="resultado" aria-live="polite">
+                Selecciona una respuesta.
+            </p>
+
+            <p>
+                Puntos: <span id="puntos">0</span>
+            </p>
+
+            <button class="boton" id="siguiente" disabled>
+                Siguiente pregunta
+            </button>
+            <button class="boton oculto" id="irRetos">
+    Ir a la Zona de retos 🎲
+</button>
+        </div>
+        
+
+
+
+
+</div>
+
+
+    <h2>🏹 Desafío de tiro con arco</h2>
+
+    <p>
+        Muévete, esquiva obstáculos y alcanza la zona de tiro.
+    </p>
+    
+
+
+<div id="pantallaJuego">
+
+    <!-- Marcador de vidas y Lums -->
+    <div id="marcadorJuego">
+        <span>❤️ Vidas: <strong id="vidasTexto">3</strong></span>
+        <span>✨ Lums: <strong id="lumsTexto">0</strong></span>
+    </div>
+
+    <!-- Escenario -->
+    <canvas id="escenario" width="600" height="300"></canvas>
+
+    <!-- Puntuación del último tiro -->
+    <div id="marcadorPuntos" class="marcador-puntos">
+        <div id="puntosUltimoTiro">Último tiro: -- puntos</div>
+    </div>
+
+
+    <div id="interfazJuego">
+        <div id="medidorFuerza" class="medidor-fuerza">
+            <div class="medidor-titulo">
+                Fuerza: <span id="valorFuerza">50%</span>
+            </div>
+
+            <div class="barra-fuerza">
+                <div id="nivelFuerza" class="nivel-fuerza"></div>
+            </div>
+        </div>
+
+        <div id="controlesTactiles" class="controles-tactiles">
+            <button id="izquierda" class="boton-control">◀</button>
+            <button id="saltar" class="boton-control">⬆</button>
+            <button id="derecha" class="boton-control">▶</button>
+        </div>
+
+        <div id="controlesDisparo" class="controles-tactiles oculto">
+            <button id="anguloMenos" class="boton-control">↙</button>
+            <button id="disparar" class="boton-control">🎯</button>
+            <button id="anguloMas" class="boton-control">↗</button>
+            <button id="potenciaMenos" class="boton-control">−</button>
+            <button id="potenciaMas" class="boton-control">+</button>
+        </div>
+    </div>
+ 
+
+
+    
+<div id="mensajeDerrota" class="oculto">
+    <h3>¡Has caído en la jungla!</h3>
+    <p>Inténtalo otra vez.</p>
+    <button id="botonReiniciar">Volver a jugar</button>
+</div>
+
+<div id="mensajeVictoria" class="oculto">
+    <h3>¡Excelente trabajo!</h3>
+    <p>¡Has recolectado todos los Lums!</p>
+    <button id="botonVictoria">Jugar otra vez</button>
+</div>
+
+<div id="menuInicio">
+    <h2>🌿 BioReto: Aventura en la jungla</h2>
+    <p>Recolecta todos los Lums y esquiva los obstáculos.</p>
+    <button id="botonJugar">¡Jugar!</button>
+</div>
+
+
+
+    <p id="estadoJuego">¡Prepárate para jugar!</p>
+</div>
+
+
+        <button class="boton" id="reiniciar">
+            Volver al inicio
+        </button>
+    </div>
+
+
+<!-- MODO HISTORIA: pergamino a pantalla completa -->
+<div id="modoHistoria" class="historia-oculta"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="historiaTitulo">
+
+    <article class="pergamino">
+
+        <div class="historia-anillas" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <header class="historia-cabecera">
+            <p class="historia-etiqueta">
+                BIORETO · ARCHIVO DEL VIAJERO
+            </p>
+            <p id="historiaProgreso">CAPÍTULO 1 DE 3</p>
+            <div class="historia-linea"></div>
+        </header>
+
+        <!-- AQUÍ aparecerá la información de cada capítulo -->
+        <main id="historiaContenido" class="historia-contenido">
+        </main>
+
+        <footer class="historia-pie">
+            <span>BioReto · Aventura en la jungla</span>
+            <button id="historiaContinuar" type="button">
+                Continuar →
+            </button>
+        </footer>
+
+    </article>
+</div>
+
+    <script>
+        // BANCO DE PREGUNTAS
+        
+const bancoPreguntas = [
+    // =========================
+    // CATEGORÍA: REPLICACIÓN
+    // =========================
+    {
+        categoria: "Replicación",
+        pregunta: '¿Por qué se dice que la replicación del ADN es "semiconservativa"?',
+        opciones: [
+            "A) Porque solo copia la mitad de los genes.",
+            "B) Porque cada molécula conserva una hebra original y una nueva.",
+            "C) Porque ocurre únicamente en la mitad del ciclo celular.",
+            "D) Porque destruye la hebra original."
+        ],
+        correcta: 1,
+        explicacion: "Cada molécula hija conserva una hebra del ADN original y contiene una hebra recién sintetizada."
+    },
+    {
+        categoria: "Replicación",
+        pregunta: "¿Cuál es la función principal de la helicasa durante la replicación?",
+        opciones: [
+            "A) Unir los fragmentos de ADN.",
+            "B) Sintetizar una nueva hebra de ARN.",
+            "C) Separar las hebras de ADN al romper los puentes de hidrógeno.",
+            "D) Corregir todos los errores de replicación."
+        ],
+        correcta: 2,
+        explicacion: "La helicasa desenrolla el ADN y separa sus dos hebras al romper los puentes de hidrógeno entre las bases."
+    },
+    {
+        categoria: "Replicación",
+        pregunta: "¿En qué dirección sintetiza la ADN polimerasa las nuevas hebras de ADN?",
+        opciones: [
+            "A) De 3' a 5'.",
+            "B) De 5' a 3'.",
+            "C) Del centro hacia ambos extremos.",
+            "D) En cualquier dirección."
+        ],
+        correcta: 1,
+        explicacion: "La ADN polimerasa añade nucleótidos al extremo 3' de la cadena en crecimiento; por eso la síntesis ocurre de 5' a 3'."
+    },
+    {
+        categoria: "Replicación",
+        pregunta: "¿Por qué se forman fragmentos de Okazaki en la hebra rezagada?",
+        opciones: [
+            "A) Porque la ADN polimerasa se queda sin nucleótidos.",
+            "B) Porque la síntesis ocurre en tramos cortos debido a la orientación antiparalela de las hebras.",
+            "C) Porque la helicasa destruye la hebra nueva.",
+            "D) Porque el ARN mensajero interrumpe la síntesis."
+        ],
+        correcta: 1,
+        explicacion: "La ADN polimerasa solo sintetiza de 5' a 3'. Por la orientación de la hebra molde, la hebra rezagada se construye en fragmentos."
+    },
+    {
+        categoria: "Replicación",
+        pregunta: '¿Qué enzima actúa como "pegamento molecular" y une los fragmentos de la hebra rezagada?',
+        opciones: [
+            "A) ADN polimerasa.",
+            "B) Helicasa.",
+            "C) ARN polimerasa.",
+            "D) ADN ligasa."
+        ],
+        correcta: 3,
+        explicacion: "La ADN ligasa sella las discontinuidades del esqueleto de azúcar-fosfato y une los fragmentos de ADN."
+    },
+
+    // =========================
+    // CATEGORÍA: TRANSCRIPCIÓN
+    // =========================
+    {
+        categoria: "Transcripción",
+        pregunta: "¿Dónde ocurre principalmente la transcripción en una célula eucariota y cuál es su objetivo?",
+        opciones: [
+            "A) En el citoplasma, para fabricar proteínas directamente.",
+            "B) En el núcleo, para producir una copia de ARN a partir de un gen.",
+            "C) En el ribosoma, para duplicar todo el genoma.",
+            "D) En la membrana celular, para eliminar intrones."
+        ],
+        correcta: 1,
+        explicacion: "En las células eucariotas, la transcripción del ADN nuclear ocurre en el núcleo y produce ARN, como el precursor del ARNm."
+    },
+    {
+        categoria: "Transcripción",
+        pregunta: "¿Cómo se llama la región del ADN que permite iniciar la transcripción?",
+        opciones: [
+            "A) Promotor.",
+            "B) Codón de parada.",
+            "C) Intrón.",
+            "D) Sitio P."
+        ],
+        correcta: 0,
+        explicacion: "El promotor es una región del ADN donde se ensamblan los factores necesarios para iniciar la transcripción."
+    },
+    {
+        categoria: "Transcripción",
+        pregunta: "Si la ARN polimerasa encuentra una adenina (A) en la hebra molde de ADN, ¿qué base incorpora al ARN?",
+        opciones: [
+            "A) Timina (T).",
+            "B) Guanina (G).",
+            "C) Citosina (C).",
+            "D) Uracilo (U)."
+        ],
+        correcta: 3,
+        explicacion: "Durante la transcripción, la adenina de la hebra molde se aparea con uracilo en el ARN."
+    },
+    {
+        categoria: "Transcripción",
+        pregunta: "¿En qué consiste el splicing del ARN mensajero eucariota?",
+        opciones: [
+            "A) En añadir lípidos a la cadena de ARN.",
+            "B) En eliminar intrones y unir exones.",
+            "C) En duplicar la cola poli-A.",
+            "D) En eliminar exones y conservar intrones."
+        ],
+        correcta: 1,
+        explicacion: "El splicing elimina los intrones del pre-ARNm y une los exones para formar un ARN maduro."
+    },
+    {
+        categoria: "Transcripción",
+        pregunta: "¿Qué dos elementos de protección se añaden al ARNm eucariota durante su maduración?",
+        opciones: [
+            "A) Cap 5' y cola poli-A.",
+            "B) Enlace peptídico y helicasa.",
+            "C) Fragmentos de Okazaki y promotor.",
+            "D) Codón AUG y sitio A."
+        ],
+        correcta: 0,
+        explicacion: "El cap 5' y la cola poli-A contribuyen a proteger el ARNm y favorecen su procesamiento, exportación y traducción."
+    },
+
+    // =========================
+    // CATEGORÍA: TRADUCCIÓN
+    // =========================
+    {
+        categoria: "Traducción",
+        pregunta: "¿Dónde ocurre la traducción y qué estructura celular la realiza?",
+        opciones: [
+            "A) En el núcleo, mediante la ARN polimerasa.",
+            "B) En el citoplasma, mediante los ribosomas.",
+            "C) En la mitocondria, mediante la helicasa.",
+            "D) En la membrana, mediante el ADN molde."
+        ],
+        correcta: 1,
+        explicacion: "Los ribosomas leen la información del ARNm y ensamblan los aminoácidos para formar una cadena polipeptídica."
+    },
+    {
+        categoria: "Traducción",
+        pregunta: "¿Cuál es el codón de inicio más común de la traducción en el ARNm?",
+        opciones: [
+            "A) UAA.",
+            "B) UGA.",
+            "C) AUG.",
+            "D) UAG."
+        ],
+        correcta: 2,
+        explicacion: "AUG es el codón de inicio habitual y codifica metionina en el código genético estándar."
+    },
+    {
+        categoria: "Traducción",
+        pregunta: '¿Qué molécula funciona como "transporte" de aminoácidos hacia el ribosoma?',
+        opciones: [
+            "A) ARNm (ARN mensajero).",
+            "B) ARNt (ARN de transferencia).",
+            "C) ADN polimerasa.",
+            "D) ADN ligasa."
+        ],
+        correcta: 1,
+        explicacion: "El ARNt transporta un aminoácido específico y reconoce los codones del ARNm mediante su anticodón."
+    },
+    {
+        categoria: "Traducción",
+        pregunta: "¿Qué tipo de enlace une los aminoácidos durante la elongación de una proteína?",
+        opciones: [
+            "A) Enlace de hidrógeno.",
+            "B) Enlace iónico.",
+            "C) Enlace peptídico.",
+            "D) Enlace glucosídico."
+        ],
+        correcta: 2,
+        explicacion: "Los aminoácidos se unen mediante enlaces peptídicos para formar una cadena polipeptídica."
+    },
+    {
+        categoria: "Traducción",
+        pregunta: "¿Qué sucede cuando el ribosoma alcanza un codón de parada (UAA, UAG o UGA)?",
+        opciones: [
+            "A) La traducción vuelve automáticamente al inicio.",
+            "B) Los factores de liberación permiten terminar la traducción y liberar la cadena polipeptídica.",
+            "C) El ribosoma se convierte en helicasa.",
+            "D) Se añaden cien aminoácidos adicionales."
+        ],
+        correcta: 1,
+        explicacion: "Los factores de liberación reconocen el codón de parada y favorecen la liberación de la cadena polipeptídica."
+    },
+
+    // =========================
+    // CATEGORÍA: MIXTAS
+    // =========================
+    {
+        categoria: "Mixtas",
+        pregunta: "Según el dogma central de la biología molecular, ¿cuál es el flujo habitual de información genética?",
+        opciones: [
+            "A) Proteína → ARN → ADN.",
+            "B) ADN → ARN → proteína.",
+            "C) ARN → ADN → proteína.",
+            "D) Proteína → ADN → ARN."
+        ],
+        correcta: 1,
+        explicacion: "El flujo habitual de información es ADN a ARN mediante transcripción y ARN a proteína mediante traducción."
+    },
+    {
+        categoria: "Mixtas",
+        pregunta: "¿Qué base nitrogenada está presente en el ARN y normalmente no en el ADN?",
+        opciones: [
+            "A) Timina.",
+            "B) Guanina.",
+            "C) Uracilo.",
+            "D) Citosina."
+        ],
+        correcta: 2,
+        explicacion: "El ARN utiliza uracilo en lugar de timina, que es la base característica del ADN."
+    },
+    {
+        categoria: "Mixtas",
+        pregunta: "¿Qué pareja de enzima y proceso está correctamente asociada?",
+        opciones: [
+            "A) ADN ligasa — transcripción.",
+            "B) ARN polimerasa — transcripción.",
+            "C) Helicasa — traducción.",
+            "D) Peptidil transferasa — replicación."
+        ],
+        correcta: 1,
+        explicacion: "La ARN polimerasa sintetiza ARN utilizando una hebra de ADN como molde durante la transcripción."
+    },
+    {
+        categoria: "Mixtas",
+        pregunta: "En una célula eucariota, ¿dónde ocurren principalmente la transcripción nuclear y la traducción?",
+        opciones: [
+            "A) Transcripción en el citoplasma y traducción en el núcleo.",
+            "B) Ambas únicamente en el núcleo.",
+            "C) Transcripción en el núcleo y traducción en el citoplasma.",
+            "D) Ambas únicamente fuera de la célula."
+        ],
+        correcta: 2,
+        explicacion: "La transcripción del ADN nuclear ocurre en el núcleo; la traducción se realiza en ribosomas del citoplasma o asociados al retículo endoplasmático. Las mitocondrias tienen su propio sistema de transcripción y traducción."
+    },
+    {
+        categoria: "Mixtas",
+        pregunta: "¿Qué consecuencia puede tener una falla en el splicing del pre-ARNm eucariota?",
+        opciones: [
+            "A) La helicasa no puede abrir la doble hélice de ADN.",
+            "B) El ARN puede conservar intrones y producir una proteína alterada o impedir su producción.",
+            "C) La ADN polimerasa cambia su dirección de síntesis a 3' → 5'.",
+            "D) Todos los ribosomas se destruyen inmediatamente."
+        ],
+        correcta: 1,
+        explicacion: "Un splicing defectuoso puede alterar el ARNm maduro, cambiar la secuencia de la proteína o impedir que se produzca correctamente."
+    }
+];
+
+
+        let preguntasPartida = [];
+        let indicePregunta = 0;
+        let puntos = 0;
+        let respondida = false;
+
+        const categoria = document.getElementById("categoria");
+        const zonaJuego = document.getElementById("zonaJuego");
+        const elementoPregunta = document.getElementById("pregunta");
+        const elementoOpciones = document.getElementById("opciones");
+        const elementoResultado = document.getElementById("resultado");
+        const elementoPuntos = document.getElementById("puntos");
+        const elementoProgreso = document.getElementById("progreso");
+        const botonSiguiente = document.getElementById("siguiente");
+
+        // MEZCLAR EL ORDEN DE LAS PREGUNTAS
+        function mezclarPreguntas(lista) {
+            for (let i = lista.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+
+                [lista[i], lista[j]] = [lista[j], lista[i]];
+            }
+
+            return lista;
+        }
+
+        // INICIAR UNA PARTIDA
+        function comenzarPartida() {
+            const seleccion = categoria.value;
+
+            preguntasPartida = bancoPreguntas.filter(function(p) {
+                return seleccion === "Todas" || p.categoria === seleccion;
+            });
+
+            mezclarPreguntas(preguntasPartida);
+
+            indicePregunta = 0;
+            puntos = 0;
+
+          
+elementoPuntos.textContent = puntos;
+
+// Ocultar el título y el texto inicial
+document.querySelector("h1").classList.add("oculto");
+document.querySelector("body > .contenedor > p").classList.add("oculto");
+
+// Ocultar la sección de categorías
+document.getElementById("contenedorCategoria").classList.add("oculto");
+
+// Mostrar únicamente la sección de preguntas
+zonaJuego.classList.remove("oculto");
+
+// Ocultar la zona de retos y el botón para acceder a ella
+document.getElementById("zonaRetos").classList.add("oculto");
+document.getElementById("irRetos").classList.add("oculto");
+
+mostrarPregunta();
+
+        }
+
+        // MOSTRAR LA PREGUNTA
+        function mostrarPregunta() {
+            const actual = preguntasPartida[indicePregunta];
+
+            respondida = false;
+
+            elementoProgreso.textContent =
+                "Pregunta " + (indicePregunta + 1) +
+                " de " + preguntasPartida.length +
+                " · " + actual.categoria;
+
+            elementoPregunta.textContent = actual.pregunta;
+            elementoResultado.textContent = "Selecciona una respuesta.";
+            elementoOpciones.innerHTML = "";
+
+            botonSiguiente.disabled = true;
+            botonSiguiente.textContent =
+                indicePregunta === preguntasPartida.length - 1
+                ? "Ver resultado final"
+                : "Siguiente pregunta";
+
+            actual.opciones.forEach(function(opcion, indice) {
+                const boton = document.createElement("button");
+
+                boton.className = "respuesta";
+                boton.textContent = opcion;
+
+                boton.addEventListener("click", function() {
+                    responder(indice);
+                });
+
+                elementoOpciones.appendChild(boton);
+            });
+        }
+
+        // COMPROBAR LA RESPUESTA
+        function responder(indiceSeleccionado) {
+            if (respondida) {
+                return;
+            }
+
+            respondida = true;
+
+            const actual = preguntasPartida[indicePregunta];
+            const botones = elementoOpciones.querySelectorAll("button");
+
+            botones.forEach(function(boton) {
+                boton.disabled = true;
+            });
+
+            if (indiceSeleccionado === actual.correcta) {
+                puntos += 2;
+
+                elementoResultado.textContent =
+                    "¡Correcto! " + actual.explicacion;
+            } else {
+                elementoResultado.textContent =
+                    "Incorrecto. " + actual.explicacion;
+            }
+
+            elementoPuntos.textContent = puntos;
+            botonSiguiente.disabled = false;
+        }
+
+        // AVANZAR O TERMINAR
+        function siguientePregunta() {
+            if (!respondida) {
+                return;
+            }
+
+            if (indicePregunta < preguntasPartida.length - 1) {
+                indicePregunta++;
+                mostrarPregunta();
+            } else {
+                mostrarResultadoFinal();
+            }
+        }
+
+        // CALCULAR Y MOSTRAR LA NOTA
+        function mostrarResultadoFinal() {
+            const maximo = preguntasPartida.length * 2;
+            const porcentaje = Math.round((puntos / maximo) * 100);
+
+            let mensaje;
+
+            if (porcentaje === 100) {
+                mensaje = "¡Excelente! Respondiste todo correctamente.";
+            } else if (porcentaje >= 60) {
+                mensaje = "¡Buen trabajo! Sigue practicando para mejorar.";
+            } else {
+                mensaje = "Sigue estudiando. ¡Cada partida te ayudará a mejorar!";
+            }
+
+            elementoProgreso.textContent = "Partida terminada";
+            elementoPregunta.textContent = "Tu resultado final";
+            elementoOpciones.innerHTML = "";
+
+            elementoResultado.textContent =
+                mensaje + " Aciertos: " + puntos / 2 +
+                " de " + preguntasPartida.length +
+                ". Puntuación: " + puntos + " de " + maximo +
+                " (" + porcentaje + "%).";
+
+            botonSiguiente.disabled = true;
+            botonSiguiente.textContent = "Partida terminada";
+            
+const zonaRetos = document.getElementById("zonaRetos");
+const botonIrRetos = document.getElementById("irRetos");
+
+// Mantener oculta la zona del dado al mostrar la nota
+zonaRetos.classList.add("oculto");
+
+// Ocultar el botón para ir a los retos
+botonIrRetos.classList.add("oculto");
+
+// Mostrar el botón solo si la nota es menor que 6
+if (puntos < 6) {
+    botonIrRetos.classList.remove("oculto");
+}
+}
+
+        // VOLVER A LA PANTALLA INICIAL
+        function mostrarSoloRetos() {
+    document.querySelector("h1").classList.add("oculto");
+    document.querySelector("body > .contenedor > p").classList.add("oculto");
+
+    document.querySelector("#contenedorCategoria")?.classList.add("oculto");
+
+    zonaJuego.classList.add("oculto");
+    document.getElementById("reiniciar").classList.add("oculto");
+
+    document.getElementById("zonaRetos").classList.remove("oculto");
+}
+      
+function volverAlInicio() {
+    // Ocultar las secciones del juego y de retos
+    zonaJuego.classList.add("oculto");
+    document.getElementById("zonaRetos").classList.add("oculto");
+    document.getElementById("irRetos").classList.add("oculto");
+
+    // Volver a mostrar la pantalla inicial
+    document.querySelector("h1").classList.remove("oculto");
+    document.querySelector("body > .contenedor > p").classList.remove("oculto");
+    document.getElementById("contenedorCategoria").classList.remove("oculto");
+
+    // Mostrar el botón de volver al inicio
+    document.getElementById("reiniciar").classList.remove("oculto");
+
+    // Reiniciar la partida
+    categoria.value = "Todas";
+    puntos = 0;
+    indicePregunta = 0;
+    respondida = false;
+
+    elementoPuntos.textContent = "0";
+    elementoProgreso.textContent = "";
+    elementoPregunta.textContent = "";
+    elementoOpciones.innerHTML = "";
+    elementoResultado.textContent = "Selecciona una respuesta.";
+
+    botonSiguiente.disabled = true;
+    botonSiguiente.textContent = "Siguiente pregunta";
+}
+
+
+        document.getElementById("comenzar")
+            .addEventListener("click", comenzarPartida);
+
+        botonSiguiente.addEventListener("click", siguientePregunta);
+
+        document.getElementById("reiniciar")
+            .addEventListener("click", volverAlInicio);
+            
+document.getElementById("irRetos")
+    .addEventListener("click", mostrarSoloRetos);
+
+            // RETOS ALEATORIOS DE BIOLOGÍA
+const retos = [
+    "Nombra tres orgánulos de una célula e indica una función de cada uno.",
+    "Explica una diferencia entre una célula animal y una célula vegetal.",
+    "Describe brevemente cómo ocurre la fotosíntesis.",
+    "Explica la función del ADN en los seres vivos.",
+    "Nombra tres niveles de organización biológica, desde el más simple.",
+    "Explica por qué las mitocondrias son importantes para la célula."
+];
+
+
+document.getElementById("lanzarDado").addEventListener("click", function() {
+    const botonDado = document.getElementById("lanzarDado");
+    const dado = document.getElementById("dado");
+    const numero = Math.floor(Math.random() * 6) + 1;
+
+    // Mostrar el resultado del dado
+    dado.classList.remove("girando");
+    void dado.offsetWidth;
+    dado.classList.add("girando");
+
+    dado.textContent = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][numero - 1];
+
+    document.getElementById("numeroReto").textContent =
+        "¡Reto número " + numero + "!";
+
+    document.getElementById("textoReto").textContent =
+        retos[numero - 1];
+
+    // Impedir que el dado se vuelva a lanzar
+    botonDado.disabled = true;
+    botonDado.textContent = "Dado utilizado ✓";
+});
+
+
+const escenario = document.getElementById("escenario");
+const ctx = escenario.getContext("2d");
+
+// Personaje principal
+const jugador = {
+    x: 55,
+    y: 210,
+    ancho: 34,
+    alto: 44,
+    velocidadY: 0,
+    velocidad: 2.5,
+    enSuelo: false
+};
+
+
+ // Elementos del escenario
+const suelo = 260;
+
+const obstaculos = [
+    { x: 190, ancho: 35, alto: 35, tipo: "pinchos" },
+    { x: 320, ancho: 42, alto: 42, tipo: "caja" },
+    { x: 455, ancho: 38, alto: 38, tipo: "pinchos" }
+];
+
+// Variables del juego
+let vidas = 3;
+let lumsRecolectados = 0;
+let juegoTerminado = false;
+let juegoIniciado = false;
+let historiaAbierta = false;
+
+const capitulosHistoria = {
+    replicacion: {
+        progreso: "CAPÍTULO 1 DE 3",
+        titulo: "REPLICACIÓN",
+        texto: `
+            <p>¡Hola, viajero! Antes de que una célula se divida,
+            tiene que duplicar todo su manual de instrucciones
+            (el ADN). Este proceso se llama
+            <strong>replicación semiconservativa</strong>.
+            ¿Por qué semiconservativa? Porque cada nueva molécula
+            conserva una hebra original y contiene una hebra nueva.
+            ¡Reciclaje biológico al 50%!</p>
+
+            <p>El ADN está enrollado con fuerza. Para leerlo hay
+            que abrirlo, y aquí entra en acción la
+            <strong>helicasa</strong>, una enzima que separa las
+            hebras rompiendo los puentes de hidrógeno.
+            Las proteínas <strong>SSB</strong> evitan que vuelvan
+            a unirse prematuramente.</p>
+
+            <p>La <strong>ADN polimerasa</strong> solo construye
+            en dirección <strong>5' a 3'</strong>. Como las hebras
+            son antiparalelas, se forman dos caminos:</p>
+
+            <ul>
+                <li><strong>Hebra líder:</strong> se copia
+                de forma continua.</li>
+                <li><strong>Hebra rezagada:</strong> se construye
+                en fragmentos llamados <strong>fragmentos de
+                Okazaki</strong>.</li>
+            </ul>
+
+            <p>La <strong>ADN ligasa</strong> une los fragmentos.
+            ¡Así que ya sabes cómo funciona la replicación!</p>
+        `,
+        siguiente: "nivel2"
+    },
+
+    transcripcion: {
+        progreso: "CAPÍTULO 2 DE 3",
+        titulo: "TRANSCRIPCIÓN",
+        texto: `
+            <p>¡Atención! El ADN es tan valioso que permanece
+            protegido en el núcleo de las células eucariotas.
+            La solución es hacer una copia temporal y portátil
+            en forma de ARN mensajero (<strong>ARNm</strong>).
+            Este proceso se llama <strong>transcripción</strong>.</p>
+
+            <p>La protagonista es la <strong>ARN polimerasa</strong>.
+            Para comenzar, reconoce una señal del ADN llamada
+            <strong>promotor</strong>, se une a ella, abre una
+            región de la doble hélice y utiliza una hebra como molde.</p>
+
+            <p>Mientras lee el ADN en dirección
+            <strong>3' a 5'</strong>, construye ARN en dirección
+            <strong>5' a 3'</strong>, usando nucleótidos
+            complementarios. ¡En el ARN no hay timina (T):
+            se utiliza uracilo (U)!</p>
+
+            <ul>
+                <li>Adenina (A) del ADN → uracilo (U) del ARN.</li>
+                <li>Citosina (C) → guanina (G), y viceversa.</li>
+            </ul>
+
+            <p>En las células eucariotas, el ARN primario pasa
+            por una etapa de procesamiento:</p>
+
+            <ol>
+                <li>Se añade un <strong>cap 5'</strong> y una
+                <strong>cola poli-A</strong>.</li>
+                <li>Mediante el <strong>splicing</strong>, se
+                eliminan los intrones y se unen los exones.</li>
+            </ol>
+
+            <p>¡Ahora el ARNm está preparado para continuar
+            su viaje!</p>
+        `,
+        siguiente: "nivel3"
+    },
+
+    traduccion: {
+        progreso: "CAPÍTULO 3 DE 3",
+        titulo: "TRADUCCIÓN",
+        texto: `
+            <p>¡Llegamos al citoplasma! El ARNm sale del núcleo
+            y llega a la fábrica principal: el
+            <strong>ribosoma</strong>. Aquí ocurre la
+            <strong>traducción</strong>, que permite interpretar
+            el mensaje del ARNm para construir una cadena de
+            aminoácidos.</p>
+
+            <p>El ribosoma reconoce el <strong>codón de inicio
+            AUG</strong>. El primer ARNt aporta el aminoácido
+            correspondiente y se coloca en el sitio P.</p>
+
+            <p>¡La fábrica no para! El ribosoma avanza codón
+            por codón. Nuevos <strong>ARNt</strong> llevan
+            aminoácidos al sitio A. Los aminoácidos se unen
+            mediante un <strong>enlace peptídico</strong>.
+            Después ocurre la <strong>translocación</strong>,
+            que permite avanzar al siguiente codón.</p>
+
+            <p>Cuando aparece un codón de parada
+            (<strong>UAA, UAG o UGA</strong>), actúan factores
+            de liberación. Se libera la cadena polipeptídica
+            y el ribosoma se separa.</p>
+
+            <p><strong>¡Misión cumplida, Doctor en Biología!</strong></p>
+        `,
+        siguiente: "final"
+    }
+};
+
+let capituloHistoriaActual = null;
+let historiaContinuacion = null;
+
+
+
+function mostrarHistoria(nombreCapitulo, accionContinuar) {
+    const capitulo = capitulosHistoria[nombreCapitulo];
+
+    if (!capitulo) {
+        console.error("No existe el capítulo:", nombreCapitulo);
+        return;
+    }
+
+    const contenedor = document.getElementById("historiaContenido");
+    const progreso = document.getElementById("historiaProgreso");
+    const modoHistoria = document.getElementById("modoHistoria");
+
+    if (!contenedor || !progreso || !modoHistoria) {
+        console.error(
+            "Falta historiaContenido, historiaProgreso o modoHistoria en el HTML."
+        );
+        return;
+    }
+
+    capituloHistoriaActual = nombreCapitulo;
+    historiaContinuacion = accionContinuar;
+
+    progreso.textContent = capitulo.progreso;
+
+    contenedor.innerHTML = `
+        <h2 id="historiaTitulo">${capitulo.titulo}</h2>
+        ${capitulo.texto}
+    `;
+
+    modoHistoria.classList.remove("historia-oculta");
+    historiaAbierta = true;
+
+    document.getElementById("historiaContinuar")?.focus();
+}
+
+
+
+function cerrarHistoriaYContinuar() {
+    document.getElementById("modoHistoria").classList.add(
+        "historia-oculta"
+    );
+
+    historiaAbierta = false;
+
+    const accion = historiaContinuacion;
+    historiaContinuacion = null;
+
+    if (typeof accion === "function") {
+        accion();
+    }
+}
+
+
+const botonHistoriaContinuar = document.getElementById("historiaContinuar");
+
+if (botonHistoriaContinuar) {
+    botonHistoriaContinuar.addEventListener(
+        "click",
+        cerrarHistoriaYContinuar
+    );
+} else {
+    console.error(
+        'No se encontró el botón con id="historiaContinuar". Revisa su ubicación en el HTML.'
+    );
+}
+
+
+
+/* Sistema de puntería de BioReto */
+let modoJuego = "lums";
+let faseNivel = 1;
+let transicionActiva = false;
+let transicionTiempo = 0;
+let nivelTransicion = 1;
+
+let flechasDisponibles = 15;
+let anguloDisparo = -Math.PI / 4;
+let potenciaDisparo = 10;
+// Configuración exclusiva del nivel 3
+let flechasNivel3 = 3;
+let impactoDiana = false;
+let historiaTraduccionProgramada = false;
+
+let puntajeTotal = 0;
+let puntajeUltimoTiro = 0;
+
+
+// Variables del mensaje flotante de puntuación
+let mensajePuntos = "";
+let tiempoMensajePuntos = 0;
+let posicionMensajeX = 0;
+let posicionMensajeY = 0;
+
+
+let flechasDisparadas = [];
+function dispararFlecha() {
+    if ((faseNivel !== 2 && faseNivel !== 3) || juegoTerminado) {
+        return;
+    }
+
+    if (faseNivel === 3 && impactoDiana) return;
+
+    if (faseNivel === 3 && flechasNivel3 <= 0) return;
+    if (faseNivel === 2 && flechasDisponibles <= 0) return;
+
+    flechasDisparadas.push({
+        x: arco.x + 12,
+        y: arco.y,
+       
+vx: Math.cos(anguloDisparo) * potenciaDisparo,
+vy: Math.sin(anguloDisparo) * potenciaDisparo,
+angulo: anguloDisparo,
+activa: true
+
+    });
+
+    if (faseNivel === 3) {
+        flechasNivel3--;
+        console.log("Flechas nivel 3:", flechasNivel3);
+    } else {
+        flechasDisponibles--;
+        console.log("Flechas restantes:", flechasDisponibles);
+    }
+}
+function actualizarFlechas() {
+    if (faseNivel !== 2 && faseNivel !== 3) return;
+
+    flechasDisparadas.forEach(flecha => {
+        if (!flecha.activa) return;
+
+        // Actualizar la posición horizontal y vertical
+        flecha.x += flecha.vx;
+        flecha.y += flecha.vy;
+
+flecha.angulo = Math.atan2(flecha.vy, flecha.vx);
+
+        // La gravedad aumenta la velocidad vertical
+        flecha.vy += gravedadFlecha;
+
+        // Desactivar la flecha si sale del escenario
+        if (
+            flecha.x > escenario.width ||
+            flecha.y > escenario.height ||
+            flecha.x < 0
+        ) {
+            flecha.activa = false;
+            return;
+        }
+// Comprobar impacto en la diana, exclusivamente en el nivel 3
+if (faseNivel === 3) {
+    const dx = flecha.x - blanco.x;
+    const dy = flecha.y - blanco.y;
+    const distancia = Math.sqrt(dx * dx + dy * dy);
+
+   
+if (distancia <= blanco.radio) {
+    const proporcion = distancia / blanco.radio;
+
+    // Calcular puntos según la distancia al centro
+    if (proporcion <= 0.18) {
+        puntajeUltimoTiro = 10;
+        
+mensajePuntos = "¡+" + puntajeUltimoTiro + " puntos!";
+tiempoMensajePuntos = 90;
+posicionMensajeX = flecha.x;
+posicionMensajeY = flecha.y - 20;
+
+    } else if (proporcion <= 0.36) {
+        puntajeUltimoTiro = 8;
+    } else if (proporcion <= 0.55) {
+        puntajeUltimoTiro = 6;
+    } else if (proporcion <= 0.73) {
+        puntajeUltimoTiro = 4;
+    } else if (proporcion <= 0.88) {
+        puntajeUltimoTiro = 2;
+    } else {
+        puntajeUltimoTiro = 1;
+    }
+
+    // Acumular puntos
+    puntajeTotal += puntajeUltimoTiro;
+
+    // Mostrar el resultado inmediatamente
+const elementoUltimoTiro = document.getElementById("puntosUltimoTiro");
+const elementoPuntajeTotal = document.getElementById("puntajeTotal");
+
+if (elementoUltimoTiro) {
+    elementoUltimoTiro.textContent =
+        "¡Impacto: " + puntajeUltimoTiro + " puntos!";
+} else {
+    console.error("No se encontró el elemento HTML: puntosUltimoTiro");
+}
+
+if (elementoPuntajeTotal) {
+    elementoPuntajeTotal.textContent =
+        "Puntuación total: " + puntajeTotal;
+} else {
+    console.error("No se encontró el elemento HTML: puntajeTotal");
+}
+
+    
+impactoDiana = true;
+flecha.activa = false;
+
+// Mostrar la historia de traducción 3 segundos después
+if (!historiaTraduccionProgramada) {
+    historiaTraduccionProgramada = true;
+
+    setTimeout(() => {
+    mostrarHistoria("traduccion", () => {
+        juegoTerminado = true;
+        historiaAbierta = false;
+
+        const modoHistoria = document.getElementById("modoHistoria");
+        if (modoHistoria) {
+            modoHistoria.classList.add("historia-oculta");
+        }
+
+        console.log("¡Aventura completada!");
+
+        // Mostrar la pantalla final si existe esta función.
+        if (typeof mostrarResultadoFinal === "function") {
+            mostrarResultadoFinal();
+        }
+    });
+}, 3000);
+}
+
+
+    console.log("Puntos del tiro:", puntajeUltimoTiro);
+    console.log("Puntuación total:", puntajeTotal);
+    mensajePuntos = "¡+" + puntajeUltimoTiro + " puntos!";
+tiempoMensajePuntos = 90;
+posicionMensajeX = flecha.x;
+posicionMensajeY = flecha.y - 20;
+}
+
+
+    return;
+}
+        // Comprobar si la flecha toca un Lum
+        for (const lum of lums) {
+            if (lum.recogido) continue;
+const flotacion = faseNivel === 2
+    ? Math.sin(camaraTiempo * 0.01 + lum.fase) * 2
+    : Math.sin(camaraTiempo * 0.01 + lum.fase) * 2;
+            const lumX = lum.x;
+            const lumY = lum.y + flotacion;
+
+            const dx = flecha.x - lumX;
+            const dy = flecha.y - lumY;
+            const distancia = Math.sqrt(dx * dx + dy * dy);
+
+            if (distancia < lum.radio + 5) {
+                lum.recogido = true;
+                lumsRecolectados++;
+                flecha.activa = false;
+
+                actualizarMarcador();
+
+                console.log(
+                    "Lums recogidos:",
+                    lumsRecolectados
+                );
+
+                break;
+            }
+        }
+    });
+
+   // Comprobar si conseguimos los cinco Lums del nivel 2
+
+
+if (
+    faseNivel === 2 &&
+    lumsRecolectados >= lums.length &&
+    !historiaAbierta
+) {
+    juegoTerminado = true;
+    retoCompletado = true;
+
+    mostrarHistoria("transcripcion", () => {
+        cambiarNivel(3);
+
+        flechasNivel3 = 3;
+impactoDiana = false;
+historiaTraduccionProgramada = false;
+disparoFinalRealizado = false;
+        puntuacionFinal = 0;
+
+        juegoTerminado = false;
+        retoCompletado = false;
+
+        console.log("Nivel 2 completado. Comienza el nivel 3.");
+    });
+}
+
+}
+
+
+function dibujarFlechas() {
+    flechasDisparadas.forEach(flecha => {
+        if (!flecha.activa) return;
+
+        ctx.save();
+
+        // Trasladar el origen a la posición de la flecha
+        ctx.translate(flecha.x, flecha.y);
+
+        // Girar según la dirección de vuelo
+        const angulo = Math.atan2(flecha.vy, flecha.vx);
+        ctx.rotate(angulo);
+
+        // Cuerpo de madera
+        ctx.strokeStyle = "#70421f";
+        ctx.lineWidth = 3;
+        ctx.lineCap = "round";
+        ctx.shadowColor = "rgba(0, 0, 0, 0.3)";
+        ctx.shadowBlur = 3;
+
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-24, 0);
+        ctx.stroke();
+
+        // Quitar sombra para los detalles
+        ctx.shadowBlur = 0;
+
+        // Punta de la flecha
+        ctx.fillStyle = "#cbd5e1";
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(-6, -3);
+        ctx.lineTo(-6, 3);
+        ctx.closePath();
+        ctx.fill();
+
+        // Plumas decorativas
+        ctx.fillStyle = "#ef4444";
+        ctx.beginPath();
+        ctx.moveTo(-16, 0);
+        ctx.lineTo(-23, -5);
+        ctx.lineTo(-8, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = "#fbbf24";
+        ctx.beginPath();
+        ctx.moveTo(-16, 0);
+        ctx.lineTo(-23, 5);
+        ctx.lineTo(-8, 0);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.restore();
+    });
+}
+
+function dibujarMensajePuntos() {
+    if (tiempoMensajePuntos <= 0) return;
+
+    ctx.save();
+
+    ctx.globalAlpha = Math.min(1, tiempoMensajePuntos / 20);
+    ctx.font = "bold 24px Arial";
+    ctx.textAlign = "center";
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#1e293b";
+    ctx.fillStyle = "#facc15";
+
+    ctx.strokeText(
+        mensajePuntos,
+        posicionMensajeX,
+        posicionMensajeY
+    );
+
+    ctx.fillText(
+        mensajePuntos,
+        posicionMensajeX,
+        posicionMensajeY
+    );
+
+    ctx.restore();
+
+    tiempoMensajePuntos--;
+    posicionMensajeY -= 0.3;
+}
+
+
+function actualizarMedidorFuerza() {
+    const porcentaje = (potenciaDisparo / 15) * 100;
+
+    document.getElementById("valorFuerza").textContent =
+        Math.round(porcentaje) + "%";
+
+    document.getElementById("nivelFuerza").style.width =
+        porcentaje + "%";
+}
+actualizarMedidorFuerza();
+let disparoEnCurso = false;
+
+let puntuacion = 0;
+let impactosBlanco = 0;
+
+let disparoFinalRealizado = false;
+let puntuacionFinal = 0;
+
+
+/* Estado de los retos */
+let retoCompletado = false;
+let resultadoMensaje = "";
+
+/* Configuración del arco */
+const arco = {
+    x: 65,
+    y: 220,
+    longitud: 38
+};
+
+/* Configuración del escenario de tiro */
+const sueloTiro = 260;
+const gravedadFlecha = 0.16;
+
+/* Blanco del segundo reto */
+const blanco = {
+    x: 490,
+    y: 165,
+    radio: 90
+};
+
+
+
+
+const lums = [
+    { x: 300, y: 215, radio: 13, recogido: false, fase: 0.2 },
+    { x: 370, y: 180, radio: 13, recogido: false, fase: 1.4 },
+    { x: 435, y: 220, radio: 13, recogido: false, fase: 2.5 },
+    { x: 350, y: 125, radio: 13, recogido: false, fase: 3.7 },
+    { x: 465, y: 125, radio: 13, recogido: false, fase: 4.8 }
+];
+
+
+
+
+
+function dibujarObstaculo(o) {
+    const ySuelo = suelo;
+
+    if (o.tipo === "caja") {
+        // Caja de madera
+        ctx.fillStyle = "#654321";
+        ctx.fillRect(
+            o.x,
+            ySuelo - o.alto,
+            o.ancho,
+            o.alto
+        );
+
+        // Borde de la caja
+        ctx.strokeStyle = "#3A2512";
+        ctx.lineWidth = 3;
+        ctx.strokeRect(
+            o.x,
+            ySuelo - o.alto,
+            o.ancho,
+            o.alto
+        );
+
+        // Detalle de madera
+        ctx.strokeStyle = "#A47545";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(o.x + 5, ySuelo - o.alto + 8);
+        ctx.lineTo(o.x + o.ancho - 5, ySuelo - 8);
+        ctx.moveTo(o.x + o.ancho - 5, ySuelo - o.alto + 8);
+        ctx.lineTo(o.x + 5, ySuelo - 8);
+        ctx.stroke();
+
+    } else if (o.tipo === "pinchos") {
+        // Pinchos metálicos
+        const baseY = ySuelo;
+        const cantidad = 3;
+        const anchoPincho = o.ancho / cantidad;
+
+        ctx.fillStyle = "#B81D13";
+        ctx.strokeStyle = "#50120E";
+        ctx.lineWidth = 2;
+
+        for (let i = 0; i < cantidad; i++) {
+            const x = o.x + i * anchoPincho;
+
+            ctx.beginPath();
+            ctx.moveTo(x, baseY);
+            ctx.lineTo(x + anchoPincho / 2, baseY - o.alto);
+            ctx.lineTo(x + anchoPincho, baseY);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Brillo del pincho
+            ctx.strokeStyle = "#FF8A80";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x + anchoPincho / 2, baseY - o.alto + 5);
+            ctx.lineTo(x + anchoPincho / 2 - 3, baseY - 8);
+            ctx.stroke();
+
+            ctx.strokeStyle = "#50120E";
+            ctx.lineWidth = 2;
+        }
+    }
+}
+
+
+function calcularPosicionPendulo() {
+    const anclaX = 390;
+    const anclaY = 15;
+    const longitud = 105;
+    const angulo = Math.sin(camaraTiempo * 0.025) * 0.65;
+
+    const bolaX = anclaX + Math.sin(angulo) * longitud;
+    const bolaY = anclaY + Math.cos(angulo) * longitud;
+
+    return {
+        x: bolaX,
+        y: bolaY,
+        radio: 30,
+        largoPincho: 17
+    };
+}
+
+
+function verificarColisiones() {
+    if (juegoTerminado || historiaAbierta) return;
+
+    // Centro aproximado del personaje
+    const jugadorCentroX = jugador.x + jugador.ancho / 2;
+    const jugadorCentroY = jugador.y + jugador.alto / 2;
+
+    // 1. Colisión con la bola del péndulo
+    const pendulo = calcularPosicionPendulo();
+
+    const distanciaX = jugadorCentroX - pendulo.x;
+    const distanciaY = jugadorCentroY - pendulo.y;
+
+    const distancia = Math.sqrt(
+        distanciaX * distanciaX +
+        distanciaY * distanciaY
+    );
+
+    // Radio aproximado que incluye los pinchos
+    const radioPeligroso = pendulo.radio + pendulo.largoPincho;
+
+    if (distancia < radioPeligroso + 12) {
+        perderVida();
+        return;
+    }
+
+    // 2. Colisiones con obstáculos del suelo
+    for (const o of obstaculos) {
+        const jugadorDerecha = jugador.x + jugador.ancho;
+        const jugadorAbajo = jugador.y + jugador.alto;
+        const obstaculoArriba = suelo - o.alto;
+
+        const hayContacto =
+            jugadorDerecha > o.x &&
+            jugador.x < o.x + o.ancho &&
+            jugadorAbajo > obstaculoArriba &&
+            jugador.y < suelo;
+
+        if (!hayContacto) continue;
+
+        if (o.tipo === "pinchos") {
+            perderVida();
+            return;
+        }
+
+        if (o.tipo === "caja") {
+            // Bloquear el paso lateral de la caja
+            if (jugador.x < o.x) {
+                jugador.x = o.x - jugador.ancho;
+            } else {
+                jugador.x = o.x + o.ancho;
+            }
+        }
+    }
+
+    // 3. Recoger Lums
+    for (const lum of lums) {
+        if (lum.recogido) continue;
+
+        const flotacion =
+            Math.sin(camaraTiempo * 0.06 + lum.fase) * 6;
+
+        const lumX = lum.x;
+        const lumY = lum.y + flotacion;
+
+        const dx = jugadorCentroX - lumX;
+        const dy = jugadorCentroY - lumY;
+
+        const distanciaLum = Math.sqrt(dx * dx + dy * dy);
+
+        if (distanciaLum < 27) {
+            lum.recogido = true;
+            lumsRecolectados++;
+
+            actualizarMarcador();
+        }
+    }
+
+    // 4. Comprobar si se recogieron todos los Lums
+    if (
+        !juegoTerminado &&
+        !historiaAbierta &&
+        lumsRecolectados >= lums.length
+    ) {
+        juegoTerminado = true;
+        retoCompletado = true;
+
+        mostrarHistoria("replicacion", () => {
+            cambiarNivel(2);
+            modoJuego = "lums";
+
+            lumsRecolectados = 0;
+
+            lums.forEach(lum => {
+                lum.recogido = false;
+            });
+
+            juegoTerminado = false;
+            actualizarMarcador();
+        });
+        
+    }
+}
+
+
+function perderVida() {
+    if (juegoTerminado) return;
+
+    vidas--;
+    actualizarMarcador();
+
+    if (vidas <= 0) {
+        vidas = 0;
+        juegoTerminado = true;
+        actualizarMarcador();
+
+        document.getElementById("mensajeDerrota")
+            .classList.remove("oculto");
+
+        return;
+    }
+
+    // Si todavía quedan vidas, reaparecer al inicio
+    jugador.x = 20;
+    jugador.y = suelo - jugador.alto;
+    jugador.velocidadY = 0;
+    jugador.enSuelo = true;
+}
+
+
+
+function cambiarNivel(nuevoNivel) {
+    faseNivel = nuevoNivel;
+
+    // Mostrar "Último tiro" solamente en el nivel 3
+    const marcadorPuntos = document.getElementById("marcadorPuntos");
+
+    if (marcadorPuntos) {
+        marcadorPuntos.style.display = (faseNivel === 3) ? "block" : "none";
+    }
+
+    actualizarVisibilidadControles();
+
+    // Reiniciar la posición del personaje
+    jugador.x = 20;
+    jugador.y = suelo - jugador.alto;
+    jugador.velocidadY = 0;
+    jugador.enSuelo = true;
+
+    // Reiniciar los proyectiles
+    flechasDisparadas = [];
+    disparoEnCurso = false;
+
+    // Preparar la transición visual
+    nivelTransicion = nuevoNivel;
+    transicionTiempo = 240;
+    transicionActiva = true;
+
+    // Actualizar el estado del juego
+    juegoTerminado = false;
+
+    console.log("Nivel actual:", faseNivel);
+}
+
+
+function dibujarPendulo() {
+    // Punto fijo donde cuelga la liana
+    const anclaX = 390;
+    const anclaY = 15;
+
+    // Longitud y movimiento del péndulo
+    const longitud = 105;
+    const angulo = Math.sin(camaraTiempo * 0.025) * 0.65;
+
+    // Posición de la bola
+    const bolaX = anclaX + Math.sin(angulo) * longitud;
+    const bolaY = anclaY + Math.cos(angulo) * longitud;
+
+    // Radio de la bola y longitud de los pinchos
+    const radio = 30;
+    const largoPincho = 17;
+    const cantidadPinchos = 12;
+
+    // Liana principal
+    ctx.save();
+    ctx.strokeStyle = "#35552D";
+    ctx.lineWidth = 6;
+    ctx.beginPath();
+    ctx.moveTo(anclaX, anclaY);
+    ctx.lineTo(bolaX, bolaY);
+    ctx.stroke();
+
+    // Hilos finos que dan textura a la liana
+    ctx.strokeStyle = "#78934A";
+    ctx.lineWidth = 1.5;
+    ctx.beginPath();
+    ctx.moveTo(anclaX - 1, anclaY);
+    ctx.lineTo(bolaX - 2, bolaY);
+    ctx.stroke();
+
+    // Dibujar los 12 pinchos radiales
+    for (let i = 0; i < cantidadPinchos; i++) {
+        const a = (Math.PI * 2 * i) / cantidadPinchos;
+
+        const inicioX = bolaX + Math.cos(a) * (radio - 3);
+        const inicioY = bolaY + Math.sin(a) * (radio - 3);
+        const puntaX = bolaX + Math.cos(a) * (radio + largoPincho);
+        const puntaY = bolaY + Math.sin(a) * (radio + largoPincho);
+
+        ctx.fillStyle = "#B81D13";
+        ctx.strokeStyle = "#50120E";
+        ctx.lineWidth = 2;
+
+        ctx.beginPath();
+        ctx.moveTo(bolaX + Math.cos(a - 0.18) * (radio - 5),
+                   bolaY + Math.sin(a - 0.18) * (radio - 5));
+        ctx.lineTo(puntaX, puntaY);
+        ctx.lineTo(bolaX + Math.cos(a + 0.18) * (radio - 5),
+                   bolaY + Math.sin(a + 0.18) * (radio - 5));
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Brillo de cada pincho
+        ctx.strokeStyle = "#FF8A80";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(inicioX, inicioY);
+        ctx.lineTo(
+            bolaX + Math.cos(a) * (radio + largoPincho * 0.55),
+            bolaY + Math.sin(a) * (radio + largoPincho * 0.55)
+        );
+        ctx.stroke();
+    }
+
+    // Cuerpo metálico de la bola
+    const brillo = ctx.createRadialGradient(
+        bolaX - 10, bolaY - 12, 3,
+        bolaX, bolaY, radio
+    );
+
+    brillo.addColorStop(0, "#F66B61");
+    brillo.addColorStop(0.45, "#D32F2F");
+    brillo.addColorStop(1, "#70130F");
+
+    ctx.fillStyle = brillo;
+    ctx.beginPath();
+    ctx.arc(bolaX, bolaY, radio, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.strokeStyle = "#50120E";
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Reflejo metálico
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.beginPath();
+    ctx.ellipse(bolaX - 10, bolaY - 12, 7, 4, -0.5, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Pequeño enganche superior
+    ctx.fillStyle = "#7D241E";
+    ctx.beginPath();
+    ctx.arc(anclaX, anclaY, 5, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+}
+
+function dibujarLums() {
+    lums.forEach(lum => {
+        if (lum.recogido) return;
+
+        // Movimiento vertical: más rápido y amplio en la fase 2
+        const flotacion = faseNivel === 2
+            ? Math.sin(camaraTiempo * 0.13 + lum.fase) * 28
+            : Math.sin(camaraTiempo * 0.06 + lum.fase) * 6;
+
+
+        const x = lum.x;
+        const y = lum.y + flotacion;
+
+        ctx.save();
+
+        // Resplandor exterior
+        ctx.shadowColor = "#FFEB3B";
+        ctx.shadowBlur = 20;
+
+        // Alas luminosas
+        ctx.fillStyle = "rgba(180, 255, 210, 0.65)";
+
+        ctx.beginPath();
+        ctx.ellipse(x - 13, y, 9, 4, -0.5, 0, Math.PI * 2);
+        ctx.ellipse(x + 13, y, 9, 4, 0.5, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Cuerpo del Lum
+        const brillo = ctx.createRadialGradient(
+            x - 5, y - 6, 2,
+            x, y, 15
+        );
+
+        brillo.addColorStop(0, "#FFFFFF");
+        brillo.addColorStop(0.4, "#FFF59D");
+        brillo.addColorStop(1, "#FFB300");
+
+        ctx.fillStyle = brillo;
+        ctx.beginPath();
+        ctx.arc(x, y, 12, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Brillo pequeño
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = "#FFFFFF";
+        ctx.beginPath();
+        ctx.arc(x - 4, y - 5, 3, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+    });
+}
+
+
+let teclas = {
+    izquierda: false,
+    derecha: false
+};
+
+let camaraTiempo = 0;
+
+// Dibujar una nube
+function dibujarNube(x, y) {
+    ctx.fillStyle = "#ffffff";
+    ctx.beginPath();
+    ctx.arc(x, y, 15, 0, Math.PI * 2);
+    ctx.arc(x + 18, y - 8, 20, 0, Math.PI * 2);
+    ctx.arc(x + 38, y, 14, 0, Math.PI * 2);
+    ctx.fill();
+}
+
+// Dibujar el paisaje
+
+
+// Dibujar obstáculos
+
+
+function dibujarFondo() {
+    const W = escenario.width;
+    const H = escenario.height;
+
+    // CAPA 0: cielo profundo y neblina
+    const cielo = ctx.createLinearGradient(0, 0, 0, H);
+    cielo.addColorStop(0, "#071a19");
+    cielo.addColorStop(0.48, "#163b32");
+    cielo.addColorStop(1, "#31533c");
+
+    ctx.fillStyle = cielo;
+    ctx.fillRect(0, 0, W, H);
+
+    // Luz ambiental entre los árboles
+    const luz = ctx.createRadialGradient(
+        320, 115, 8, 320, 115, 210
+    );
+    luz.addColorStop(0, "rgba(113, 164, 100, 0.30)");
+    luz.addColorStop(0.5, "rgba(49, 105, 73, 0.12)");
+    luz.addColorStop(1, "rgba(3, 17, 15, 0)");
+
+    ctx.fillStyle = luz;
+    ctx.fillRect(0, 0, W, H);
+
+    // Montañas cubiertas de niebla
+    function montana(color, base, amplitud, fase) {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(0, H);
+
+        for (let x = 0; x <= W; x += 5) {
+            const y = base
+                + Math.sin(x * 0.018 + fase) * amplitud
+                + Math.sin(x * 0.041 + fase * 2) * 8;
+
+            ctx.lineTo(x, y);
+        }
+
+        ctx.lineTo(W, H);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    montana("#203e35", 157, 20, 0.5);
+    montana("#172f29", 184, 16, 2.1);
+    montana("#102820", 205, 12, 4.0);
+
+    // Serpiente gigante en una montaña lejana
+    // Es una silueta decorativa, no una entidad física.
+    ctx.save();
+    ctx.strokeStyle = "#0a211d";
+    ctx.lineWidth = 11;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+
+    ctx.beginPath();
+    ctx.moveTo(365, 164);
+    ctx.bezierCurveTo(390, 130, 410, 175, 435, 150);
+    ctx.bezierCurveTo(455, 128, 467, 143, 478, 129);
+    ctx.stroke();
+
+    // Cabeza y ojo
+    ctx.fillStyle = "#0a211d";
+    ctx.beginPath();
+    ctx.ellipse(480, 127, 12, 7, -0.4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#a4c95b";
+    ctx.beginPath();
+    ctx.arc(483, 125, 1.8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    // CAPA 1: troncos gigantes
+    function tronco(x, ancho, color) {
+        const grad = ctx.createLinearGradient(
+            x, 0, x + ancho, 0
+        );
+
+        grad.addColorStop(0, "#101f19");
+        grad.addColorStop(0.25, color);
+        grad.addColorStop(0.65, "#243c2b");
+        grad.addColorStop(1, "#0a1b16");
+
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.bezierCurveTo(
+            x + ancho * 0.15, 75,
+            x - ancho * 0.12, 150,
+            x + ancho * 0.12, H
+        );
+        ctx.lineTo(x + ancho, H);
+        ctx.bezierCurveTo(
+            x + ancho * 0.75, 150,
+            x + ancho * 1.15, 65,
+            x + ancho * 0.85, 0
+        );
+        ctx.closePath();
+        ctx.fill();
+
+        // Estrías curvas de corteza
+        ctx.strokeStyle = "rgba(4, 19, 13, 0.55)";
+        ctx.lineWidth = 3;
+
+        for (let i = 1; i <= 4; i++) {
+            const bx = x + ancho * i / 5;
+
+            ctx.beginPath();
+            ctx.moveTo(bx, 8);
+            ctx.bezierCurveTo(
+                bx - 7, 70,
+                bx + 5, 125,
+                bx - 2, H
+            );
+            ctx.stroke();
+        }
+
+        // Musgo iluminado en el lateral
+        ctx.strokeStyle = "#426b42";
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(x + ancho * 0.3, 95);
+        ctx.quadraticCurveTo(
+            x + ancho * 0.15, 118,
+            x + ancho * 0.3, 145
+        );
+        ctx.stroke();
+    }
+
+    tronco(-17, 58, "#3A5A40");
+    tronco(535, 65, "#3A5A40");
+
+    // Lianas colgantes con curvas
+    function liana(x, longitud, fase) {
+        ctx.strokeStyle = "#142d20";
+        ctx.lineWidth = 5;
+        ctx.beginPath();
+        ctx.moveTo(x, -5);
+        ctx.bezierCurveTo(
+            x + 18, longitud * 0.25,
+            x - 14 + fase, longitud * 0.65,
+            x + 8, longitud
+        );
+        ctx.stroke();
+
+        ctx.strokeStyle = "#548047";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(x - 1, 0);
+        ctx.bezierCurveTo(
+            x + 15, longitud * 0.25,
+            x - 16 + fase, longitud * 0.65,
+            x + 6, longitud - 2
+        );
+        ctx.stroke();
+    }
+
+    liana(115, 118, 5);
+    liana(285, 92, -4);
+    liana(490, 145, 3);
+
+    // Helechos y hojas en las paredes
+    function hoja(x, y, largo, angulo, color) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angulo);
+
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(
+            largo * 0.55, -largo * 0.4,
+            largo, 0
+        );
+        ctx.quadraticCurveTo(
+            largo * 0.55, largo * 0.12,
+            0, 0
+        );
+        ctx.closePath();
+        ctx.fill();
+
+        // Nervadura central
+        ctx.strokeStyle = "rgba(143, 179, 103, 0.45)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(
+            largo * 0.5, -largo * 0.1,
+            largo, 0
+        );
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    for (let i = 0; i < 8; i++) {
+        hoja(
+            15 + i * 9, 195 + (i % 3) * 10,
+            32 + (i % 3) * 8,
+            -0.8 + i * 0.12,
+            i % 2 === 0 ? "#244a30" : "#315a35"
+        );
+
+        hoja(
+            580 - i * 8, 190 + (i % 4) * 12,
+            35 + (i % 3) * 7,
+            3.6 + i * 0.12,
+            i % 2 === 0 ? "#1b3928" : "#315638"
+        );
+    }
+
+    // Suelo: base oscura con volumen
+    const tierra = ctx.createLinearGradient(
+        0, suelo - 5, 0, H
+    );
+
+    tierra.addColorStop(0, "#488836");
+    tierra.addColorStop(0.13, "#28532f");
+    tierra.addColorStop(0.42, "#1C3B27");
+    tierra.addColorStop(1, "#10251c");
+
+    ctx.fillStyle = tierra;
+    ctx.beginPath();
+    ctx.moveTo(0, suelo + 5);
+    ctx.bezierCurveTo(
+        100, suelo - 1,
+        165, suelo + 4,
+        240, suelo + 1
+    );
+    ctx.bezierCurveTo(
+        370, suelo - 4,
+        460, suelo + 5,
+        W, suelo
+    );
+    ctx.lineTo(W, H);
+    ctx.lineTo(0, H);
+    ctx.closePath();
+    ctx.fill();
+
+    // Musgo superficial irregular
+    ctx.strokeStyle = "#488836";
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.moveTo(0, suelo + 2);
+    ctx.bezierCurveTo(
+        100, suelo - 4,
+        155, suelo + 5,
+        260, suelo + 1
+    );
+    ctx.bezierCurveTo(
+        365, suelo - 3,
+        480, suelo + 4,
+        W, suelo
+    );
+    ctx.stroke();
+
+    // Manchas de humedad y tierra
+    for (let i = 0; i < 38; i++) {
+        const x = (i * 47 + 13) % W;
+        const y = suelo + 10 + ((i * 17) % 27);
+        const ancho = 2 + (i % 5) * 1.3;
+
+        ctx.fillStyle = i % 2 === 0
+            ? "rgba(7, 23, 16, 0.55)"
+            : "rgba(139, 121, 69, 0.24)";
+
+        ctx.beginPath();
+        ctx.ellipse(
+            x, y, ancho, 1.5 + (i % 3),
+            -0.2, 0, Math.PI * 2
+        );
+        ctx.fill();
+    }
+
+    // Raíces oscuras sobre la tierra
+    ctx.strokeStyle = "#172d1e";
+    ctx.lineWidth = 4;
+    ctx.lineCap = "round";
+
+    for (let i = 0; i < 5; i++) {
+        const x = 35 + i * 128;
+
+        ctx.beginPath();
+        ctx.moveTo(x, suelo - 2);
+        ctx.bezierCurveTo(
+            x + 8, suelo + 8,
+            x + 20, suelo + 9,
+            x + 32, suelo + 15
+        );
+        ctx.stroke();
+    }
+
+    // Piedras oscuras con borde iluminado
+    for (let i = 0; i < 17; i++) {
+        const x = 12 + i * 35;
+        const y = suelo + 21 + (i % 3) * 4;
+
+        ctx.fillStyle = "#15281e";
+        ctx.beginPath();
+        ctx.ellipse(
+            x, y, 4 + (i % 3) * 2, 2.5,
+            0, 0, Math.PI * 2
+        );
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(151, 172, 105, 0.45)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(
+            x - 1, y - 1, 3 + (i % 2),
+            Math.PI, Math.PI * 1.8
+        );
+        ctx.stroke();
+    }
+}
+
+
+
+// Dibujar un personaje de caricatura original
+function dibujarJugador() {
+    const x = jugador.x;
+    const y = jugador.y;
+
+    // Sombra
+    ctx.fillStyle = "#00000025";
+    ctx.beginPath();
+    ctx.ellipse(x + 17, suelo + 2, 21, 5, 0, 0,
+        Math.PI * 2);
+    ctx.fill();
+
+    // Brazos
+    ctx.strokeStyle = "#f4b183";
+    ctx.lineWidth = 7;
+    ctx.lineCap = "round";
+
+    ctx.beginPath();
+    ctx.moveTo(x + 7, y + 24);
+    ctx.lineTo(x - 3, y + 31);
+    ctx.moveTo(x + 27, y + 24);
+    ctx.lineTo(x + 37, y + 30);
+    ctx.stroke();
+
+    // Piernas
+    ctx.strokeStyle = "#263b80";
+    ctx.lineWidth = 8;
+
+    ctx.beginPath();
+    ctx.moveTo(x + 11, y + 33);
+    ctx.lineTo(x + 7, y + 42);
+    ctx.moveTo(x + 23, y + 33);
+    ctx.lineTo(x + 27, y + 42);
+    ctx.stroke();
+
+    // Zapatos
+    ctx.fillStyle = "#f5d547";
+    ctx.beginPath();
+    ctx.ellipse(x + 5, y + 43, 9, 4, 0, 0,
+        Math.PI * 2);
+    ctx.ellipse(x + 29, y + 43, 9, 4, 0, 0,
+        Math.PI * 2);
+    ctx.fill();
+
+    // Cuerpo
+    ctx.fillStyle = "#e94f64";
+    ctx.beginPath();
+    ctx.roundRect(x + 5, y + 17, 24, 19, 7);
+    ctx.fill();
+
+    // Cabeza
+    ctx.fillStyle = "#f4b183";
+    ctx.beginPath();
+    ctx.arc(x + 17, y + 11, 13, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cabello
+    ctx.fillStyle = "#633b27";
+    ctx.beginPath();
+    ctx.arc(x + 17, y + 5, 12, Math.PI, Math.PI * 2);
+    ctx.fill();
+
+    // Ojos
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(x + 12, y + 11, 4, 0, Math.PI * 2);
+    ctx.arc(x + 22, y + 11, 4, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = "#202c45";
+    ctx.beginPath();
+    ctx.arc(x + 13, y + 12, 2, 0, Math.PI * 2);
+    ctx.arc(x + 23, y + 12, 2, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Sonrisa
+    ctx.strokeStyle = "#9e3940";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(x + 17, y + 15, 5, 0.2, Math.PI - 0.2);
+    ctx.stroke();
+}
+
+function dibujarPrimerPlano() {
+    // Viñeta: oscurece los bordes de la cámara
+    const sombra = ctx.createRadialGradient(
+        300, 140, 90,
+        300, 140, 360
+    );
+
+    sombra.addColorStop(0, "rgba(0, 0, 0, 0)");
+    sombra.addColorStop(0.72, "rgba(2, 12, 9, 0.12)");
+    sombra.addColorStop(1, "rgba(2, 9, 7, 0.7)");
+
+    ctx.fillStyle = sombra;
+    ctx.fillRect(0, 0, 600, 300);
+
+    // Grandes hojas oscuras que enmarcan la escena
+    function hojaFrontal(x, y, largo, angulo) {
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(angulo);
+
+        ctx.fillStyle = "#0b2117";
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(
+            largo * 0.2, -largo * 0.28,
+            largo * 0.72, -largo * 0.25,
+            largo, 0
+        );
+        ctx.bezierCurveTo(
+            largo * 0.68, largo * 0.08,
+            largo * 0.25, largo * 0.13,
+            0, 0
+        );
+        ctx.closePath();
+        ctx.fill();
+
+        // Nervadura con un leve reflejo
+        ctx.strokeStyle = "#25452b";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.quadraticCurveTo(
+            largo * 0.48, -largo * 0.02,
+            largo, 0
+        );
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    hojaFrontal(-8, 30, 135, 0.45);
+    hojaFrontal(-12, 70, 120, 0.18);
+    hojaFrontal(610, 24, 145, 2.75);
+    hojaFrontal(610, 78, 120, 3.0);
+    hojaFrontal(5, 296, 115, -0.5);
+    hojaFrontal(595, 298, 120, 3.55);
+}
+
+// Dibujar todos los elementos
+
+function dibujarFondoTiro() {
+    const w = escenario.width;
+    const h = escenario.height;
+    const esNivel3 = faseNivel === 3;
+
+    // 1. Cielo con degradado
+    const cielo = ctx.createLinearGradient(0, 0, 0, h);
+
+    if (esNivel3) {
+        cielo.addColorStop(0, "#101d42");
+        cielo.addColorStop(0.55, "#334b7d");
+        cielo.addColorStop(1, "#f5a66a");
+    } else {
+        cielo.addColorStop(0, "#42b9e8");
+        cielo.addColorStop(0.65, "#b8f0e5");
+        cielo.addColorStop(1, "#fff0bd");
+    }
+
+    ctx.fillStyle = cielo;
+    ctx.fillRect(0, 0, w, h);
+
+    // 2. Sol o luna con resplandor
+    const luzX = esNivel3 ? 500 : 95;
+    const luzY = esNivel3 ? 55 : 55;
+    const luzR = esNivel3 ? 20 : 27;
+
+    const resplandor = ctx.createRadialGradient(
+        luzX, luzY, 2,
+        luzX, luzY, luzR * 2.5
+    );
+
+    resplandor.addColorStop(
+        0,
+        esNivel3 ? "rgba(255,220,150,0.55)" :
+                   "rgba(255,246,170,0.7)"
+    );
+    resplandor.addColorStop(1, "rgba(255,255,255,0)");
+
+    ctx.fillStyle = resplandor;
+    ctx.fillRect(
+        luzX - luzR * 2.5,
+        luzY - luzR * 2.5,
+        luzR * 5,
+        luzR * 5
+    );
+
+    ctx.beginPath();
+    ctx.arc(luzX, luzY, luzR, 0, Math.PI * 2);
+    ctx.fillStyle = esNivel3 ? "#fff0c2" : "#fff7b0";
+    ctx.shadowColor = esNivel3 ? "#ffd58a" : "#fff4a0";
+    ctx.shadowBlur = 22;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // 3. Estrellas en el nivel 3
+    if (esNivel3) {
+        ctx.fillStyle = "#ffffff";
+
+        for (let i = 0; i < 45; i++) {
+            const x = (i * 83 + 19) % w;
+            const y = (i * 47 + 13) % 145;
+            const r = i % 4 === 0 ? 2 : 1;
+
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // 4. Montañas del fondo
+    ctx.fillStyle = esNivel3 ? "#344365" : "#75bd83";
+    ctx.beginPath();
+    ctx.moveTo(0, 190);
+    ctx.lineTo(75, 105);
+    ctx.lineTo(135, 170);
+    ctx.lineTo(215, 95);
+    ctx.lineTo(305, 185);
+    ctx.lineTo(410, 115);
+    ctx.lineTo(510, 175);
+    ctx.lineTo(w, 120);
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.closePath();
+    ctx.fill();
+
+    // 5. Colinas intermedias
+    ctx.fillStyle = esNivel3 ? "#455477" : "#399b69";
+    ctx.beginPath();
+    ctx.moveTo(0, 215);
+    ctx.quadraticCurveTo(130, 160, 255, 220);
+    ctx.quadraticCurveTo(400, 170, w, 215);
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.closePath();
+    ctx.fill();
+
+    // 6. Suelo con degradado y sombra
+    const sueloGrad = ctx.createLinearGradient(0, 225, 0, h);
+
+    if (esNivel3) {
+        sueloGrad.addColorStop(0, "#59617b");
+        sueloGrad.addColorStop(1, "#222a45");
+    } else {
+        sueloGrad.addColorStop(0, "#64bd65");
+        sueloGrad.addColorStop(1, "#226444");
+    }
+
+    ctx.fillStyle = sueloGrad;
+    ctx.fillRect(0, 225, w, h - 225);
+
+    // 7. Línea de luz en el horizonte
+    ctx.strokeStyle = esNivel3 ? "#f8bd91" : "#c6f7a5";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(0, 226);
+    ctx.lineTo(w, 226);
+    ctx.stroke();
+
+    // 8. Hierba o pequeñas marcas del terreno
+    if (!esNivel3) {
+        ctx.strokeStyle = "#a9e88a";
+        ctx.lineWidth = 2;
+
+        for (let i = 12; i < w; i += 28) {
+            ctx.beginPath();
+            ctx.moveTo(i, 244);
+            ctx.lineTo(i - 4, 237);
+            ctx.moveTo(i, 244);
+            ctx.lineTo(i + 5, 238);
+            ctx.stroke();
+        }
+    } else {
+        // Piedras decorativas del campo nocturno
+        for (let i = 20; i < w; i += 65) {
+            ctx.fillStyle = "#727b95";
+            ctx.beginPath();
+            ctx.ellipse(i, 250, 9, 3, 0, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+}
+
+
+function dibujarArco() {
+    ctx.save();
+
+       // Arco de madera con sombra
+    ctx.strokeStyle = "#8b572a";
+    ctx.lineWidth = 6;
+    ctx.lineCap = "round";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.45)";
+    ctx.shadowBlur = 7;
+    ctx.shadowOffsetX = 3;
+    ctx.shadowOffsetY = 3;
+    ctx.lineCap = "round";
+
+    // Curva exterior del arco
+    ctx.beginPath();
+    ctx.moveTo(arco.x, arco.y - arco.longitud);
+    ctx.quadraticCurveTo(
+        arco.x + 30,
+        arco.y,
+        arco.x,
+        arco.y + arco.longitud
+    );
+    ctx.stroke();
+        // Desactivar la sombra para la cuerda y la mira
+    ctx.shadowColor = "transparent";
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+
+    // Cuerda
+    ctx.strokeStyle = "#F5E6C8";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(arco.x, arco.y - arco.longitud);
+    ctx.lineTo(arco.x, arco.y + arco.longitud);
+    ctx.stroke();
+
+    ctx.restore();
+    
+    // Trayectoria parabólica parcial de referencia
+    if (juegoIniciado && !juegoTerminado && !disparoEnCurso) {
+        ctx.save();
+
+        const puntaX = arco.x
+            + Math.cos(anguloDisparo) * arco.longitud;
+
+        const puntaY = arco.y
+            + Math.sin(anguloDisparo) * arco.longitud;
+
+        ctx.beginPath();
+
+        for (let t = 0; t <= 0.8; t += 0.08) {
+            const x = puntaX
+                + Math.cos(anguloDisparo) * 75 * t;
+
+            const y = puntaY
+                + Math.sin(anguloDisparo) * 75 * t
+                + 0.5 * gravedadFlecha * 75 * t * t;
+
+            if (t === 0) {
+                ctx.moveTo(x, y);
+            } else {
+                ctx.lineTo(x, y);
+            }
+        }
+
+        ctx.setLineDash([3, 6]);
+        ctx.strokeStyle = "#fff5a0";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.setLineDash([]);
+        ctx.restore();
+    }
+
+    // Indicador visual del ángulo de disparo
+    if (juegoIniciado && !juegoTerminado && !disparoEnCurso) {
+        ctx.save();
+
+        ctx.translate(arco.x, arco.y);
+        ctx.rotate(anguloDisparo);
+
+        // Pequeña marca perpendicular para destacar la dirección
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(35, -5);
+        ctx.lineTo(35, 5);
+        ctx.stroke();
+
+        ctx.restore();
+    }
+
+    // Mostrar el ángulo de apuntado en grados
+    if (juegoIniciado && !juegoTerminado && !disparoEnCurso) {
+        ctx.save();
+
+        const anguloGrados = Math.round(
+            anguloDisparo * 180 / Math.PI
+        );
+
+        ctx.font = "bold 12px Arial";
+        ctx.textAlign = "center";
+        ctx.fillStyle = "#263b2c";
+
+        ctx.fillText(
+            "Ángulo: " + anguloGrados + "°",
+            arco.x,
+            arco.y + 43
+        );
+
+        ctx.restore();
+    }
+
+}
+
+function dibujarDiana() {
+        // Soporte vertical de madera
+    ctx.save();
+
+    // Sombra del soporte
+    ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
+    ctx.beginPath();
+    ctx.ellipse(
+        blanco.x + 8,
+        254,
+        28,
+        7,
+        0,
+        0,
+        Math.PI * 2
+    );
+    ctx.fill();
+
+    // Poste principal
+    const madera = ctx.createLinearGradient(
+        blanco.x - 10, 0,
+        blanco.x + 10, 0
+    );
+    madera.addColorStop(0, "#603819");
+    madera.addColorStop(0.45, "#bd8044");
+    madera.addColorStop(1, "#75421f");
+
+    ctx.fillStyle = madera;
+    ctx.fillRect(blanco.x - 8, blanco.y + 65, 16, 120);
+
+    // Detalles de las vetas de la madera
+    ctx.strokeStyle = "rgba(75, 42, 19, 0.65)";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(blanco.x - 3, blanco.y + 78);
+    ctx.lineTo(blanco.x - 3, blanco.y + 170);
+    ctx.moveTo(blanco.x + 4, blanco.y + 85);
+    ctx.lineTo(blanco.x + 4, blanco.y + 160);
+    ctx.stroke();
+
+    // Base horizontal
+    ctx.fillStyle = "#70421f";
+    ctx.fillRect(blanco.x - 24, 246, 48, 9);
+
+    ctx.restore();
+        // Sombra exterior de la diana
+    ctx.save();
+
+    ctx.beginPath();
+    ctx.arc(
+        blanco.x + 5,
+        blanco.y + 7,
+        blanco.radio + 4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.28)";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+    ctx.shadowBlur = 12;
+    ctx.fill();
+
+    ctx.restore();
+    // Sombra exterior de la diana
+    ctx.save();
+
+    ctx.beginPath();
+    ctx.arc(
+        blanco.x + 5,
+        blanco.y + 7,
+        blanco.radio + 4,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.28)";
+    ctx.shadowColor = "rgba(0, 0, 0, 0.4)";
+    ctx.shadowBlur = 12;
+    ctx.fill();
+
+    ctx.restore();
+
+    const anillos = [
+        { radio: 90, color: "#ffffff" },
+        { radio: 70, color: "#e53935" },
+        { radio: 50, color: "#1976d2" },
+        { radio: 30, color: "#fdd835" },
+        { radio: 12, color: "#e53935" }
+    ];
+
+    ctx.save();
+
+    anillos.forEach(anillo => {
+        ctx.beginPath();
+        ctx.arc(
+            blanco.x,
+            blanco.y,
+            anillo.radio,
+            0,
+            Math.PI * 2
+        );
+
+        ctx.fillStyle = anillo.color;
+        ctx.fill();
+
+                // Borde oscuro para separar cada anillo
+        ctx.strokeStyle = "#263238";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Brillo sutil en el borde de cada anillo
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.45)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(
+            blanco.x,
+            blanco.y,
+            anillo.radio - 2,
+            Math.PI,
+            Math.PI * 2
+        );
+        ctx.stroke();
+    });
+
+    ctx.restore();
+}
+
+    
+function actualizarMarcador() {
+    const textoVidas = document.getElementById("vidasTexto");
+    const textoLums = document.getElementById("lumsTexto");
+
+    if (textoVidas) {
+        textoVidas.textContent = vidas;
+    }
+
+    if (textoLums) {
+        textoLums.textContent = lumsRecolectados;
+    }
+}
+
+function dibujarEscenario() {
+    if (faseNivel === 1) {
+        dibujarFondo();
+        obstaculos.forEach(dibujarObstaculo);
+        dibujarPendulo();
+        dibujarLums();
+        dibujarJugador();
+        dibujarPrimerPlano();
+
+    } else if (faseNivel === 2) {
+    dibujarFondoTiro();
+    dibujarLums();
+    dibujarArco();
+
+    actualizarFlechas();
+    dibujarFlechas();
+
+    } else if (faseNivel === 3) {
+    dibujarFondoTiro();
+    dibujarDiana();
+    dibujarArco();
+    actualizarFlechas();
+    dibujarFlechas();
+    if (impactoDiana) {
+    ctx.save();
+
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.fillRect(100, 100, 400, 70);
+
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 28px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText("¡Diana alcanzada!", 300, 143);
+
+    ctx.restore();
+}
+dibujarMensajePuntos();
+}
+
+    // Mensaje de transición entre niveles
+    if (transicionActiva) {
+        const ancho = escenario.width;
+        const alto = escenario.height;
+
+        // Fondo oscuro sobre el escenario
+        ctx.fillStyle = "rgba(10, 18, 14, 0.82)";
+        ctx.fillRect(0, 0, ancho, alto);
+
+        // Panel central estilo videojuego retro
+        ctx.fillStyle = "#17291F";
+        ctx.fillRect(75, 85, 450, 125);
+
+        ctx.strokeStyle = "#C8F56A";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(75, 85, 450, 125);
+
+        // Nombre del nivel
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.font = "bold 16px monospace";
+        ctx.fillStyle = "#C8F56A";
+
+        ctx.fillText(
+            "★ NIVEL " + nivelTransicion + " ★",
+            ancho / 2,
+            120
+        );
+
+        // Mensaje según el nivel
+        ctx.font = "bold 21px monospace";
+        ctx.fillStyle = "#FFFFFF";
+
+        let mensaje = "";
+
+        if (nivelTransicion === 2) {
+            mensaje = "¡PREPARA TU ARCO!";
+        } else if (nivelTransicion === 3) {
+            mensaje = "¡A POR LA DIANA!";
+        } else {
+            mensaje = "¡COMIENZA LA AVENTURA!";
+        }
+
+        ctx.fillText(mensaje, ancho / 2, 160);
+
+        // Pequeños bloques decorativos
+        ctx.fillStyle = "#84CC16";
+        ctx.fillRect(100, 185, 12, 8);
+        ctx.fillRect(488, 185, 12, 8);
+
+        transicionTiempo--;
+
+        if (transicionTiempo <= 0) {
+            transicionActiva = false;
+        }
+    }
+
+    camaraTiempo += 0.5;
+    requestAnimationFrame(dibujarEscenario);
+
+}
+
+// Movimiento horizontal
+function moverIzquierda() {
+    jugador.x = Math.max(0, jugador.x - 20);
+}
+
+function moverDerecha() {
+    jugador.x = Math.min(
+        escenario.width - jugador.ancho,
+        jugador.x + 20
+    );
+}
+
+// Saltar
+function saltar() {
+    if (jugador.enSuelo) {
+        jugador.velocidadY = -11;
+        jugador.enSuelo = false;
+    }
+}
+
+// Controles en pantalla
+
+const botonIzquierda = document.getElementById("izquierda");
+const botonDerecha = document.getElementById("derecha");
+const botonSaltar = document.getElementById("saltar");
+
+// Mantener presionado para moverse a la izquierda
+botonIzquierda.addEventListener("pointerdown", (evento) => {
+    evento.preventDefault();
+    teclas.izquierda = true;
+});
+
+// Mantener presionado para moverse a la derecha
+botonDerecha.addEventListener("pointerdown", (evento) => {
+    evento.preventDefault();
+    teclas.derecha = true;
+});
+
+// Soltar los botones detiene el movimiento
+function detenerMovimiento() {
+    teclas.izquierda = false;
+    teclas.derecha = false;
+}
+
+[botonIzquierda, botonDerecha].forEach((boton) => {
+    boton.addEventListener("pointerup", detenerMovimiento);
+    boton.addEventListener("pointercancel", detenerMovimiento);
+    boton.addEventListener("lostpointercapture", detenerMovimiento);
+    boton.addEventListener("pointerleave", detenerMovimiento);
+});
+
+// Saltar al pulsar el botón
+botonSaltar.addEventListener("pointerdown", (evento) => {
+    evento.preventDefault();
+    saltar();
+});
+
+// Evitar que el personaje siga moviéndose
+// si se interrumpe la interacción con la ventana
+window.addEventListener("blur", detenerMovimiento);
+
+
+// Controles del teclado
+document.addEventListener("keydown", function(evento) {
+    if (["ArrowLeft", "ArrowRight", "ArrowUp", " "]
+        .includes(evento.key)) {
+        evento.preventDefault();
+    }
+
+    if (evento.key === "ArrowLeft") {
+        teclas.izquierda = true;
+    }
+
+    if (evento.key === "ArrowRight") {
+        teclas.derecha = true;
+    }
+
+    if (evento.key === "ArrowUp" || evento.key === " ") {
+        saltar();
+    }
+});
+
+document.addEventListener("keydown", function(evento) {
+    if (faseNivel !== 2 && faseNivel !== 3) return;
+
+    if (evento.code === "Space") {
+        evento.preventDefault();
+        dispararFlecha();
+    }
+
+    if (evento.key === "ArrowUp") {
+        anguloDisparo = Math.max(
+            -Math.PI / 2,
+            anguloDisparo - 0.05
+        );
+    }
+
+    if (evento.key === "ArrowDown") {
+        anguloDisparo = Math.min(
+            0,
+            anguloDisparo + 0.05
+        );
+    }
+    
+if (evento.key.toLowerCase() === "w") {
+    potenciaDisparo = Math.min(15, potenciaDisparo + 0.5);
+    actualizarMedidorFuerza();
+}
+
+
+// Disminuir la potencia con la tecla S
+if (evento.key.toLowerCase() === "s") {
+    potenciaDisparo = Math.max(5, potenciaDisparo - 0.5);
+    console.log("Potencia:", potenciaDisparo);
+}
+});
+
+
+document.addEventListener("keyup", function(evento) {
+    if (evento.key === "ArrowLeft") {
+        teclas.izquierda = false;
+    }
+
+    if (evento.key === "ArrowRight") {
+        teclas.derecha = false;
+    }
+});
+
+const botonDisparar = document.getElementById("disparar");
+const botonAnguloMenos = document.getElementById("anguloMenos");
+const botonAnguloMas = document.getElementById("anguloMas");
+const botonPotenciaMenos = document.getElementById("potenciaMenos");
+const botonPotenciaMas = document.getElementById("potenciaMas");
+
+
+
+function actualizarVisibilidadControles() {
+    const controlesMovimiento = document.getElementById("controlesTactiles");
+    const controlesArco = document.getElementById("controlesDisparo");
+
+    const faseArco = faseNivel === 2 || faseNivel === 3;
+
+    controlesMovimiento.classList.toggle("oculto", faseArco);
+    controlesArco.classList.toggle("oculto", !faseArco);
+}
+
+
+
+actualizarVisibilidadControles();
+
+
+// Disparar una flecha
+botonDisparar.addEventListener("pointerdown", (evento) => {
+    evento.preventDefault();
+    dispararFlecha();
+});
+
+// Bajar el ángulo
+botonAnguloMenos.addEventListener("click", () => {
+    if (faseNivel !== 2 && faseNivel !== 3) return;
+
+    anguloDisparo = Math.max(
+        -Math.PI / 2,
+        anguloDisparo - 0.05
+    );
+});
+
+// Subir el ángulo
+botonAnguloMas.addEventListener("click", () => {
+    if (faseNivel !== 2 && faseNivel !== 3) return;
+
+    anguloDisparo = Math.min(
+        0,
+        anguloDisparo + 0.05
+    );
+});
+
+// Disminuir la potencia
+botonPotenciaMenos.addEventListener("click", () => {
+    if (faseNivel !== 2 && faseNivel !== 3) return;
+
+    potenciaDisparo = Math.max(
+        1,
+        potenciaDisparo - 0.5
+    );
+
+    actualizarMedidorFuerza();
+});
+
+// Aumentar la potencia
+botonPotenciaMas.addEventListener("click", () => {
+    if (faseNivel !== 2 && faseNivel !== 3) return;
+
+    potenciaDisparo = Math.min(
+        15,
+        potenciaDisparo + 0.5
+    );
+
+    actualizarMedidorFuerza();
+});
+
+
+
+ // Física del personaje
+function actualizarJugador() {
+    if (!juegoIniciado || juegoTerminado || faseNivel !== 1) {
+        requestAnimationFrame(actualizarJugador);
+        return;
+    }
+
+    if (teclas.izquierda) {
+        jugador.x = Math.max(0, jugador.x - jugador.velocidad);
+    }
+
+    if (teclas.derecha) {
+        jugador.x = Math.min(
+            escenario.width - jugador.ancho,
+            jugador.x + jugador.velocidad
+        );
+    }
+
+    jugador.velocidadY += 0.5;
+    jugador.y += jugador.velocidadY;
+
+    // Aterrizar sobre el suelo
+    if (jugador.y + jugador.alto >= suelo) {
+        jugador.y = suelo - jugador.alto;
+        jugador.velocidadY = 0;
+        jugador.enSuelo = true;
+    } else {
+        jugador.enSuelo = false;
+    }
+
+    verificarColisiones();
+
+    requestAnimationFrame(actualizarJugador);
+}
+
+// Iniciar animación y movimiento
+dibujarEscenario();
+actualizarJugador();
+
+
+function reiniciarJuego() {
+    juegoIniciado = true;
+    vidas = 3;
+    lumsRecolectados = 0;
+    juegoTerminado = false;
+
+    // Restablecer todos los coleccionables
+    lums.forEach(lum => {
+        lum.recogido = false;
+    });
+
+    // Colocar al personaje en el inicio
+    jugador.x = 20;
+    jugador.y = suelo - jugador.alto;
+    jugador.velocidadY = 0;
+    jugador.enSuelo = true;
+
+    // Ocultar la pantalla de derrota
+    document.getElementById("mensajeDerrota")
+        .classList.add("oculto");
+        document.getElementById("mensajeVictoria")
+    .classList.add("oculto");
+
+    // Actualizar el marcador
+    actualizarMarcador();
+}
+
+document.getElementById("botonReiniciar")
+    .addEventListener("click", reiniciarJuego);
+    
+document.getElementById("botonVictoria")
+    .addEventListener("click", reiniciarJuego);
+document.getElementById("botonJugar")
+    .addEventListener("click", function () {
+        juegoIniciado = true;
+        document.getElementById("menuInicio")
+            .classList.add("oculto");
+    });
+window.probarNivel2 = function () {
+    cambiarNivel(2);
+    juegoTerminado = false;
+    console.log("Prueba visual del nivel 2");
+};
+// Mostrar los valores iniciales
+actualizarMarcador();
+
+
+const retosBioRetoNuevos = [
+    {
+        nombre: "🧬 El cromosoma en la pared",
+        texto: "Dibuja un cromosoma en una hoja o pizarra. Señala las dos cromátidas hermanas, el centrómero y los telómeros. Explica la función de cada estructura."
+    },
+    {
+        nombre: "🎭 Dramatizar metafóricamente la transcripción",
+        texto: "Representa la transcripción como una obra de teatro. Un participante será el ADN, otro la ARN polimerasa y otro el ARN mensajero. Actúen cómo se copia la información genética del ADN al ARN."
+    },
+    {
+        nombre: "✂️ El Splicing Express",
+        texto: "Escribe una secuencia de ARN que contenga exones e intrones. Identifica cada parte, elimina los intrones y une los exones para representar la maduración del ARN mensajero."
+    },
+    {
+        nombre: "🏁 La Carrera de Okazaki",
+        texto: "Usa tiras de papel para representar los fragmentos de Okazaki de la cadena retardada. Ordénalos y explica cómo la ADN ligasa une los fragmentos durante la replicación."
+    },
+    {
+        nombre: "👨‍🍳 El Chef Ribosoma",
+        texto: "Traduce la secuencia de ARN mensajero AUG-GCU-UUU-UGA utilizando una tabla del código genético. Identifica el codón de inicio, los aminoácidos incorporados y el codón de terminación."
+    },
+    {
+        nombre: "📞 El Teléfono Descompuesto de la Polimerasa",
+        texto: "Una persona transmite una secuencia genética a otra, que la pasa a una tercera. Comparen el mensaje final con el original e identifiquen posibles errores. Expliquen cómo la fidelidad y la corrección de errores de las polimerasas ayudan a conservar la información genética."
+    }
+];
+
+const botonLanzarReto = document.getElementById("lanzarDado");
+const dadoBioReto = document.getElementById("dado");
+const numeroRetoBio = document.getElementById("numeroReto");
+const textoRetoBio = document.getElementById("textoReto");
+
+botonLanzarReto.addEventListener("click", function () {
+    const numero = Math.floor(Math.random() * retosBioRetoNuevos.length);
+    const reto = retosBioRetoNuevos[numero];
+
+    dadoBioReto.textContent = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"][numero];
+
+    numeroRetoBio.textContent =
+        "Reto " + (numero + 1) + ": " + reto.nombre;
+
+    textoRetoBio.textContent = reto.texto;
+});
+
+
+    </script>
+
+</body>
+</html>
+
